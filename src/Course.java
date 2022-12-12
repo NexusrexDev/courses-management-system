@@ -27,9 +27,11 @@ public class Course {
             endDate = new SimpleDateFormat("dd-MM-yyyy").parse(scanner.nextLine());
             days = scanner.nextInt();
             grade = scanner.nextInt();
-            //Bug: reads an extra student for some odd reason (empty string)
             while (scanner.hasNextLine()) {
                 studentUsernames.add(scanner.nextLine());
+            }
+            if (studentUsernames.contains("")) {
+                studentUsernames.remove("");
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
