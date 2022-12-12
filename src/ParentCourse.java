@@ -89,15 +89,4 @@ public class ParentCourse implements EventListener {
         }
 
     }
-    public static void main(String[] args) {
-        ParentCourse cs = new ParentCourse( "cs12");
-        ArrayList<String> courses = new ArrayList<>();
-        courses.add("cs324");
-        courses.add("cs321");
-        cs.setName("compSc");
-        cs.setCourses(courses);
-        cs.update();
-
-
-    }
 }
