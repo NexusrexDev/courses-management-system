@@ -34,7 +34,7 @@ public class Student extends Person implements EventListener {
 
         try {
             writer = new FileWriter(userName+".txt");
-            writer.write(userName +"\n");
+            //writer.write(userName +"\n");
             writer.write(name +"\n");
             writer.write(phone +"\n");
             writer.write(age +"\n");
@@ -52,27 +52,8 @@ public class Student extends Person implements EventListener {
 
     Student(String userName)
     {
-
         this.username = userName;
-        file = new File(userName +".txt");
-        try {
-            Scanner read = new Scanner(file);
-
-            read.nextLine();
-            name = read.nextLine();
-            phone = read.nextLine();
-            age = read.nextLine();
-            while (read.hasNextLine())
-            {
-
-                courses.add(read.nextLine());
-                grades.add(read.nextLine());
-            }
-
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        read();
     }
 
 
@@ -124,7 +105,7 @@ public class Student extends Person implements EventListener {
     public void update() {
         try {
             writer = new FileWriter(this.username+".txt");
-            writer.write(this.username+"\n");
+            //writer.write(this.username+"\n");
             writer.write(name +"\n");
             writer.write(phone +"\n");
             writer.write(age +"\n");
@@ -148,7 +129,7 @@ public class Student extends Person implements EventListener {
         try {
             Scanner read = new Scanner(file);
 
-            this.username = read.nextLine();
+            //this.username = read.nextLine();
             name = read.nextLine();
             phone = read.nextLine();
             age = read.nextLine();
@@ -159,7 +140,7 @@ public class Student extends Person implements EventListener {
                 grades.add(read.nextLine());
             }
 
-
+            read.close();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -253,9 +234,9 @@ public class Student extends Person implements EventListener {
         grades.add("95");
         grades.add("90");
 
-        Student student = new Student("mazin1");
+        Student student = new Student("mazin1", "pass", "mazin", "0100", "19", course);
 
-        student.delete();
+        //student.delete();
 
 
 
