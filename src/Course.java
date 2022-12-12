@@ -27,11 +27,18 @@ public class Course implements EventListener {
         this.price = price;
         this.days = days;
         this.grade = grade;
-        this.startDate = (Date)startDate.clone();
-        this.endDate = (Date)endDate.clone();
-        this.studentUsernames = (ArrayList<String>)studentUsernames.clone();
+        this.startDate = (Date) startDate.clone();
+        this.endDate = (Date) endDate.clone();
+        this.studentUsernames = (ArrayList<String>) studentUsernames.clone();
         update();
-    }
+        //Creates a survey file as well
+        File surveyFile = new File(ID + ".txt");
+        try {
+            surveyFile.createNewFile();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    } 
 
     public ArrayList<String> getStudentUsernames() {
         return studentUsernames;
