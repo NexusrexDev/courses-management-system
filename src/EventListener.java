@@ -1,2 +1,5 @@
-package PACKAGE_NAME;public interface EventListener {
+public interface EventListener {
+
+    public void update();
+
 }

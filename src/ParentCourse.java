@@ -1,10 +1,103 @@
-package PACKAGE_NAME;import java.util.*;
+import java.util.*;
+import java.io.*;
 
-public class ParentCourse {
+public class ParentCourse implements EventListener {
 
-    public static void main(String[] args){
-        Scanner input = new Scanner(System.in);
-        
-        
+   private String name;
+   private String code;
+   private ArrayList<String> courses = new ArrayList<>();
+   private FileWriter writer;
+   private File file;
+
+
+
+    ParentCourse(String name, String code,ArrayList<String> courses)
+   {
+       try {
+           writer = new FileWriter(code +".txt");
+           writer.write(name +"\n");
+           writer.write(code +"\n");
+           for (String cours : courses) writer.write(cours + "\n");
+           writer.close();
+
+       } catch (IOException e) {
+           throw new RuntimeException(e);
+       }
+
+   }
+
+   ParentCourse(String code)
+   {
+       file = new File(code +".txt");
+       this.code = code;
+
+       try {
+           Scanner read = new Scanner(file);
+           this.name =read.nextLine();
+           String line ;
+
+            while (read.hasNextLine())
+            {
+                line = read.nextLine();
+                if(line.equals(code))
+                    continue;
+                else courses.add(line);
+            }
+
+       } catch (FileNotFoundException e) {
+           throw new RuntimeException(e);
+       }
+
+
+
+   }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+
+
+    public ArrayList<String> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(ArrayList<String> courses) {
+        this.courses = courses;
+    }
+
+
+
+    @Override
+    public void update() {
+        try {
+            writer = new FileWriter(code +".txt");
+            writer.write(name +"\n");
+            writer.write(code +"\n");
+            for (String cours : courses) writer.write(cours + "\n");
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+    public static void main(String[] args) {
+        ParentCourse cs = new ParentCourse( "cs12");
+        ArrayList<String> courses = new ArrayList<>();
+        courses.add("cs324");
+        courses.add("cs321");
+        cs.setName("compSc");
+        cs.setCourses(courses);
+        cs.update();
+
+
     }
 }
