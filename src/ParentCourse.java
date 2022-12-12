@@ -89,4 +89,14 @@ public class ParentCourse implements EventListener {
         }
 
     }
+
+    @Override
+    public void read() {
+
+    }
+
+    @Override
+    public void delete() {
+
+    }
 }
