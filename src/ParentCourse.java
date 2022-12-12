@@ -28,28 +28,8 @@ public class ParentCourse implements EventListener {
 
    ParentCourse(String code)
    {
-       file = new File(code +".txt");
-       this.code = code;
-
-       try {
-           Scanner read = new Scanner(file);
-           this.name =read.nextLine();
-           String line ;
-
-            while (read.hasNextLine())
-            {
-                line = read.nextLine();
-                if(line.equals(code))
-                    continue;
-                else courses.add(line);
-            }
-
-       } catch (FileNotFoundException e) {
-           throw new RuntimeException(e);
-       }
-
-
-
+        this.code = code;
+        read();
    }
 
     public String getName() {
@@ -64,8 +44,6 @@ public class ParentCourse implements EventListener {
         return code;
     }
 
-
-
     public ArrayList<String> getCourses() {
         return courses;
     }
@@ -73,8 +51,6 @@ public class ParentCourse implements EventListener {
     public void setCourses(ArrayList<String> courses) {
         this.courses = courses;
     }
-
-
 
     @Override
     public void update() {
@@ -92,11 +68,27 @@ public class ParentCourse implements EventListener {
 
     @Override
     public void read() {
+        file = new File(code +".txt");
+        try {
+            Scanner read = new Scanner(file);
+            this.name =read.nextLine();
+            String line ;
 
-    }
+            while (read.hasNextLine())
+            {
+                line = read.nextLine();
+                if(line.equals(code))
+                    continue;
+                else courses.add(line);
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }}
 
     @Override
     public void delete() {
-
+        File file = new File(code + ".txt");
+        file.delete();
     }
 }
