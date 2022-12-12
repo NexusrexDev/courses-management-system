@@ -46,13 +46,16 @@ public class Course implements EventListener {
     }
 
     public String toString() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        String s = name + "\n" + parentCourseCode + "\n" + instructorUsername + "\n" + room + "\n" +
-                price + "\n" + dateFormat.format(startDate) + "\n" + dateFormat.format(endDate) + "\n" + days + "\n" + grade;
-        for (String usernames : studentUsernames) {
-            s = s + "\n" + usernames;
-        }
-        return s;
+        String courseHeader = parentCourseCode + " - " + ID + " : " + name + "\n";
+        String courseInstructor = "Instructor: " + instructorUsername + "\n";
+        String coursePrice = "Price: " + price + "\n";
+        String courseRoom = "Room: " + room + "\n";
+        String courseStart = "Start Date: " + new SimpleDateFormat("dd-MM-yyyy").format(startDate) + "\n";
+        String courseEnd = "End Date: " + new SimpleDateFormat("dd-MM-yyyy").format(endDate) + "\n";
+        String courseStudents = "Number of students: " + studentUsernames.size() + "\n";
+        String courseInfo = courseHeader + courseInstructor + coursePrice + courseRoom
+                            + courseStart + courseEnd + courseStudents;
+        return courseInfo;
     }
 
     public boolean removeStudent(String student) {
@@ -71,7 +74,13 @@ public class Course implements EventListener {
         File file = new File( ID + ".txt");
         try {
             fileWriter = new FileWriter(file);
-            fileWriter.write(this.toString());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            String s = name + "\n" + parentCourseCode + "\n" + instructorUsername + "\n" + room + "\n" +
+                    price + "\n" + dateFormat.format(startDate) + "\n" + dateFormat.format(endDate) + "\n" + days + "\n" + grade;
+            for (String usernames : studentUsernames) {
+                s = s + "\n" + usernames;
+            }
+            fileWriter.write(s);
             fileWriter.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
