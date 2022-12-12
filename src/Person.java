@@ -4,9 +4,10 @@ import java.io.*;
 public class Person {
     private String username ;
     private String password ;
+    private  String path;
 
     public boolean login(String Username, String Password) {
-        File F = new File("users.txt");
+        File F = new File(path);
         try {
             Scanner input = new Scanner(F);
             while (input.hasNextLine())
