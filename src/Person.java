@@ -2,9 +2,9 @@ import java.util.*;
 import java.io.*;
 
 public class Person {
-    private String username ;
-    private String password ;
-    private  String path;
+    protected String username ;
+    protected String password ;
+    protected   String path;
 
     public boolean login(String Username, String Password) {
         File F = new File(path);
