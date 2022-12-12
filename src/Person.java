@@ -4,9 +4,9 @@ import java.io.*;
 public class Person {
     protected String username ;
     protected String password ;
-    protected   String path;
 
-    public boolean login(String Username, String Password) {
+
+    public boolean login(String Username, String Password,String path) {
         File F = new File(path);
         try {
             Scanner input = new Scanner(F);
