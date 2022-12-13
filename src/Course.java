@@ -61,6 +61,14 @@ public class Course implements EventListener {
         return endDate;
     }
 
+    public String getParentCourseCode() {
+        return parentCourseCode;
+    }
+
+    public String getInstructorUsername() {
+        return instructorUsername;
+    }
+
     public String toString() {
         String courseHeader = parentCourseCode + " - " + ID + " : " + name + "\n";
         String courseInstructor = "Instructor: " + instructorUsername + "\n";

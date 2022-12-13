@@ -40,6 +40,37 @@ public class Instructor extends Person implements EventListener{
     }
     // override login -> call super for the path, if true load.
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+        update();
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+        update();
+    }
+
+    public String getSalary() {
+        return salary;
+    }
+
+    public void setSalary(String salary) {
+        this.salary = salary;
+        update();
+    }
+
+    public ArrayList<String> getCourseID() {
+        return courseID;
+    }
+
     public boolean login(String username, String password) throws Exception {
         boolean loggedIn= super.login(username, password, Global.InstructorLogin );
         if (loggedIn){
@@ -62,11 +93,11 @@ public class Instructor extends Person implements EventListener{
             return false;
         }
 
-
     // remove course
     public boolean removeCourse(String course){
         if (this.courseID.contains(course)){
             courseID.remove(course);
+            update();
             return true;
         }
         else return false;
