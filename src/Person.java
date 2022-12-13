@@ -6,7 +6,7 @@ public class Person {
     protected String password ;
 
 
-    public boolean login(String Username, String Password,String path) {
+    public boolean login(String Username, String Password,String path) throws Exception {
         File F = new File(path);
         try {
             Scanner input = new Scanner(F);
@@ -14,7 +14,7 @@ public class Person {
             {
                 username = input.nextLine();
                 password = input.nextLine();
-                if (username.equals(Username))
+                if (username.equalsIgnoreCase(Username))
                 {
                     return password.equals(Password);
                 }
@@ -24,7 +24,8 @@ public class Person {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        return false;
+
+        throw new Exception("Username or password wrong.");
     }
 
     public String getUsername()

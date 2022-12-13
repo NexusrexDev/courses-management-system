@@ -30,7 +30,7 @@ public class Instructor extends Person implements EventListener{
     }
     // override login -> call super for the path, if true load.
 
-    public boolean login(String username, String password){
+    public boolean login(String username, String password) throws Exception {
         boolean loggedIn= super.login(username, password, "Instructors.txt" );
         if (loggedIn){
             this.read();
