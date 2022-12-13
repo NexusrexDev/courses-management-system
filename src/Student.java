@@ -12,13 +12,13 @@ public class Student extends Person implements EventListener {
     private FileWriter writer;
     private File file;
 
-
+    // default constructor
     Student()
     {
 
     }
 
-
+    // constructor to make student
     Student(String userName ,String password ,String name , String phone,String age , ArrayList<String> courses)
     {
         try {
@@ -36,9 +36,9 @@ public class Student extends Person implements EventListener {
             writer.write(name +"\n");
             writer.write(phone +"\n");
             writer.write(age +"\n");
-            for(int i =0 ;i<courses.size();i++)
+            for(String course :courses)
             {
-                writer.write(courses.get(i) +"\n");
+                writer.write(course +"\n");
                 writer.write("\n");
 
             }
@@ -48,11 +48,11 @@ public class Student extends Person implements EventListener {
         }
     }
 
+    // constructor to read student data
     Student(String userName)  {
         this.username = userName;
         read();
     }
-
 
     public String getPhone() {
         return phone;
@@ -124,7 +124,7 @@ public class Student extends Person implements EventListener {
         try {
             Scanner read = new Scanner(file);
 
-            //this.username = read.nextLine();
+
             name = read.nextLine();
             phone = read.nextLine();
             age = read.nextLine();
@@ -209,14 +209,14 @@ public class Student extends Person implements EventListener {
 
     }
 
-    public boolean login(String Username, String Password) throws Exception {
+    public boolean login(String Username, String Password) throws NonexistentUserException {
 
         if(super.login(Username,Password,Global.StudentLogin))
         {
             read();
             return true;
         }
-        else return false;
+        else throw new NonexistentUserException();
     }
 
     public String toString()

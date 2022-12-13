@@ -11,7 +11,7 @@ public class ParentCourse implements EventListener {
 
 
 
-    ParentCourse(String code, String name,ArrayList<String> courses)
+   ParentCourse(String code, String name,ArrayList<String> courses)
    {
        try {
 
@@ -48,8 +48,10 @@ public class ParentCourse implements EventListener {
         return courses;
     }
 
-    public void setCourses(ArrayList<String> courses) {
-        this.courses = courses;
+
+    public void addCourse(String courseID) {
+        courses.add(courseID);
+        update();
     }
 
     public boolean removeCourse(String course) {

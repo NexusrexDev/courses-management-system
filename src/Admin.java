@@ -5,8 +5,10 @@ public class Admin extends Person {
     private ArrayList<String> instructorUsernames = new ArrayList<>();
     private ArrayList<String> studentUsernames = new ArrayList<>();
 
-    public boolean login(String Username, String Password) throws Exception {
-        return super.login(Username, Password, Global.AdminLogin);
+    public boolean login(String Username, String Password) throws NonexistentUserException {
+         if(super.login(Username, Password, Global.AdminLogin))
+             return true;
+         else throw new NonexistentUserException();
     }
 
     public ArrayList<String> getInstructorUsernames() {
@@ -144,23 +146,55 @@ public class Admin extends Person {
         instructor.delete();
     }
 
-    public void addStudent() {
-        
-    }
-    
-    public void updateStudent() {
-        
-    }
-    
-    public void deleteStudent() {
-
+    //This method creates a student
+    public void addStudent(String username, String password, String name, String phone, String age) {
+        ArrayList<String> initialEmpty = new ArrayList<>();
+        Student newStudent = new Student(username, password, name, phone, age, initialEmpty);
     }
 
-    public void createCourse() {
+    //This method updates a student's details
+    public void updateStudent(String studentUsername, String newName, String newAge, String newPhone) {
+        Student student = new Student(studentUsername);
+        if (!newName.isEmpty()) {
+            student.setName(newName);
+        }
+        if (!newPhone.isEmpty()) {
+            student.setPhone(newPhone);
+        }
+        if (!newAge.isEmpty()) {
+            student.setAge(newAge);
+        }
+    }
+
+    //This method deletes a student
+    public void deleteStudent(String studentUsername) {
+        Student student = new Student(studentUsername);
+
+        for(String courseID :student.getCourses())
+        {
+            Course course = new Course(courseID);
+            course.removeStudent(studentUsername);
+
+        }
+        student.delete();
 
     }
 
-    public void createReport() {
+    //This method creates a course
+    public void createCourse(String ID, String name, String parentCourseCode, String instructorUsername, String room, String price, int days, int grade, Date startDate, Date endDate, ArrayList<String> studentUsernames) {
+        Course newCourse = new Course(ID, name, parentCourseCode, instructorUsername, room, price, days, grade, startDate, endDate, studentUsernames);
+        ParentCourse parentCourse = new ParentCourse(parentCourseCode);
+        parentCourse.addCourse(ID);
+        Instructor instructor = new Instructor(instructorUsername);
+        instructor.addCourse(ID);
+        for (String studentUsername : studentUsernames) {
+            Student student = new Student(studentUsername);
+            student.addCourses(ID);
+        }
+    }
 
+    //This method creates a report file
+    public void createReport(boolean starting) {
+        Reports report = new Reports(starting);
     }
 }

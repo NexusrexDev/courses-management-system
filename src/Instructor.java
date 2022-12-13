@@ -72,13 +72,12 @@ public class Instructor extends Person implements EventListener{
     }
 
     public boolean login(String username, String password) throws Exception {
-        boolean loggedIn= super.login(username, password, Global.InstructorLogin );
-        if (loggedIn){
+        if (super.login(username, password, Global.InstructorLogin )){
             this.read();
             return true;
         }
         else
-            return false;
+            throw new NonexistentUserException();
     }
 
     // setGrade(String courseID, String userID, String grade) function
@@ -92,6 +91,11 @@ public class Instructor extends Person implements EventListener{
         else
             return false;
         }
+
+    public void addCourse(String courseID) {
+        this.courseID.add(courseID);
+        update();
+    }
 
     // remove course
     public boolean removeCourse(String course){

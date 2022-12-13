@@ -38,15 +38,6 @@ public class Course implements EventListener {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        //Appends to the parent course file
-        File parentCourseFile = new File(Global.ParentCourseFolder + parentCourseCode + ".txt");
-        try {
-            fileWriter = new FileWriter(parentCourseFile, true);
-            fileWriter.append(this.ID + "\n");
-            fileWriter.close();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
     } 
 
     public ArrayList<String> getStudentUsernames() {
