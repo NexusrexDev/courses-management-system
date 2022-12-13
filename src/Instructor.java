@@ -2,8 +2,8 @@ import java.util.*;
 import java.io.*;
 
 public class Instructor extends Person implements EventListener{
-    private String name, phoneNumber, salary;
 
+    private String name, phoneNumber, salary;
     private FileWriter fileWriter;
     private ArrayList<String> courseID = new ArrayList<>();
 
@@ -26,12 +26,22 @@ public class Instructor extends Person implements EventListener{
         this.phoneNumber=phoneNumber;
         this.salary=salary;
         this.courseID= (ArrayList<String>) courseID.clone();
+        //Appending the username/password to the login file
+        File instructorsFile = new File(Global.InstructorLogin);
+        try {
+            fileWriter = new FileWriter(instructorsFile);
+            fileWriter.append(username + "\n");
+            fileWriter.append(password + "\n");
+            fileWriter.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         this.update();
     }
     // override login -> call super for the path, if true load.
 
     public boolean login(String username, String password) throws Exception {
-        boolean loggedIn= super.login(username, password, "Instructors.txt" );
+        boolean loggedIn= super.login(username, password, Global.InstructorLogin );
         if (loggedIn){
             this.read();
             return true;
@@ -64,20 +74,25 @@ public class Instructor extends Person implements EventListener{
 
     // override toString
     public String toString(){
-        String i = name + "\n" + phoneNumber + "\n" + salary;
-        for (String courses: courseID){
-            i = i + "\n" + courses;
-        }
-        return i;
+        String instructorHeader = username + " - " + name + "\n";
+        String instructorPhoneNum = "Phone number: " + phoneNumber + "\n";
+        String instructorSalary = "Salary: " + salary + "\n";
+        String instructorCourses = "Number of taught courses: " + courseID.size() + "\n";
+        String instructorInfo = instructorHeader + instructorPhoneNum + instructorSalary + instructorCourses;
+        return instructorInfo;
     }
 
     // update function
     @Override
     public void update() {
-        File instructorFile = new File(username + ".txt");
+        File instructorFile = new File(Global.InstructorFolder + username + ".txt");
         try {
             fileWriter = new FileWriter(instructorFile);
-            fileWriter.write(toString());
+            String i = name + "\n" + phoneNumber + "\n" + salary;
+            for (String courses: courseID){
+                i = i + "\n" + courses;
+            }
+            fileWriter.write(i);
             fileWriter.close();
         }
         catch (Exception e){
@@ -118,7 +133,7 @@ public class Instructor extends Person implements EventListener{
 
     @Override
     public void read(){
-        File instructorFile = new File(username + ".txt");
+        File instructorFile = new File(Global.InstructorFolder + username + ".txt");
         try {
             Scanner scanner = new Scanner(instructorFile);
             name = scanner.nextLine();
