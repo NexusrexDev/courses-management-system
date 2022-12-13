@@ -100,8 +100,7 @@ public class ParentCourse implements EventListener {
 
     @Override
     public void delete() {
-        //Doesn't work for some reason?
-        File file = new File(Global.ParentCourseFolder + code +".txt");
+        file = new File(Global.ParentCourseFolder + code +".txt");
         file.delete();
     }
 

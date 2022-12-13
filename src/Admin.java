@@ -10,6 +10,7 @@ public class Admin extends Person {
     }
 
     public void readUsernames(ArrayList<String> list, String path) {
+        //This method fills the list w/ files from a specific path, used for instructor and student usernames
         File fileList = new File(path);
         try {
             Scanner listReader = new Scanner(fileList);
@@ -52,13 +53,15 @@ public class Admin extends Person {
         }
     }
 
-    //This method creates a new parent course and saves it
     public void createParentCourse(String parentCourseName, String parentCourseCode) {
+        //This method creates a new parent course and saves it
         ArrayList<String> initialEmpty = new ArrayList<>();
         ParentCourse newParentCourse = new ParentCourse(parentCourseName, parentCourseCode, initialEmpty);
     }
 
     public void deleteParentCourse(String parentCourseCode) {
+        /*This method deletes a parent course, its children (courses) and removes courses from instructors
+        and students*/
         ParentCourse parentCourse = new ParentCourse(parentCourseCode);
         parentCourse.delete();
     }
