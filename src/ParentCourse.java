@@ -11,13 +11,12 @@ public class ParentCourse implements EventListener {
 
 
 
-    ParentCourse(String name, String code,ArrayList<String> courses)
+    ParentCourse(String code, String name,ArrayList<String> courses)
    {
        try {
 
            writer = new FileWriter(Global.ParentCourseFolder + code +".txt");
            writer.write(name +"\n");
-           writer.write(code +"\n");
            for (String cours : courses) writer.write(cours + "\n");
            writer.close();
 
@@ -69,7 +68,6 @@ public class ParentCourse implements EventListener {
         try {
             writer = new FileWriter(Global.ParentCourseFolder + code +".txt");
             writer.write(name +"\n");
-            writer.write(code +"\n");
             for (String cours : courses) writer.write(cours + "\n");
             writer.close();
         } catch (IOException e) {
@@ -89,10 +87,9 @@ public class ParentCourse implements EventListener {
             while (read.hasNextLine())
             {
                 line = read.nextLine();
-                if(line.equals(code))
-                    continue;
-                else courses.add(line);
+                courses.add(line);
             }
+            read.close();
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
