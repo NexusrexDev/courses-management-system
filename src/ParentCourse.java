@@ -91,4 +91,12 @@ public class ParentCourse implements EventListener {
         File file = new File(code + ".txt");
         file.delete();
     }
+
+    public String toString()
+    {
+        String header = code +" - "+ name +"\n";
+        String coursesNo = "Number of courses : " +courses.size()+"\n";
+        return header+coursesNo;
+    }
+
 }
