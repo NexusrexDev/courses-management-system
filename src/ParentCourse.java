@@ -14,7 +14,8 @@ public class ParentCourse implements EventListener {
     ParentCourse(String name, String code,ArrayList<String> courses)
    {
        try {
-           writer = new FileWriter(code +".txt");
+
+           writer = new FileWriter(Global.ParentCourseFolder + code +".txt");
            writer.write(name +"\n");
            writer.write(code +"\n");
            for (String cours : courses) writer.write(cours + "\n");
@@ -26,8 +27,7 @@ public class ParentCourse implements EventListener {
 
    }
 
-   ParentCourse(String code)
-   {
+   ParentCourse(String code) {
         this.code = code;
         read();
    }
@@ -38,6 +38,7 @@ public class ParentCourse implements EventListener {
 
     public void setName(String name) {
         this.name = name;
+        update();
     }
 
     public String getCode() {
@@ -52,10 +53,21 @@ public class ParentCourse implements EventListener {
         this.courses = courses;
     }
 
+    public boolean removeCourse(String course) {
+        //This method removes a course from the array list then updates the file
+        if (courses.contains(course)) {
+            courses.remove(course);
+            update();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public void update() {
         try {
-            writer = new FileWriter(code +".txt");
+            writer = new FileWriter(Global.ParentCourseFolder + code +".txt");
             writer.write(name +"\n");
             writer.write(code +"\n");
             for (String cours : courses) writer.write(cours + "\n");
@@ -68,7 +80,7 @@ public class ParentCourse implements EventListener {
 
     @Override
     public void read() {
-        file = new File(code +".txt");
+        file = new File(Global.ParentCourseFolder + code +".txt");
         try {
             Scanner read = new Scanner(file);
             this.name =read.nextLine();
@@ -88,7 +100,8 @@ public class ParentCourse implements EventListener {
 
     @Override
     public void delete() {
-        File file = new File(code + ".txt");
+        //Doesn't work for some reason?
+        File file = new File(Global.ParentCourseFolder + code +".txt");
         file.delete();
     }
 

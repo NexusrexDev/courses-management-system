@@ -7,5 +7,5 @@ public final class Global {
     public static final String CourseFolder = "Courses/";
     public static final String ParentCourseFolder = "ParentCourses/";
     public static final String ReportFolder = "Reports/";
-    public static final String SurveyFolder = "Survey/";
+    public static final String SurveyFolder = "Surveys/";
 }

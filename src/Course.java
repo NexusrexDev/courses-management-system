@@ -31,10 +31,19 @@ public class Course implements EventListener {
         this.endDate = (Date) endDate.clone();
         this.studentUsernames = (ArrayList<String>) studentUsernames.clone();
         update();
-        //Creates a survey file as well
-        File surveyFile = new File(ID + ".txt");
+        //Creates a survey file
+        File surveyFile = new File(Global.SurveyFolder + ID + ".txt");
         try {
             surveyFile.createNewFile();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        //Appends to the parent course file
+        File parentCourseFile = new File(Global.ParentCourseFolder + parentCourseCode + ".txt");
+        try {
+            fileWriter = new FileWriter(parentCourseFile, true);
+            fileWriter.append(this.ID + "\n");
+            fileWriter.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -78,7 +87,7 @@ public class Course implements EventListener {
 
     @Override
     public void update() {
-        File file = new File( ID + ".txt");
+        File file = new File( Global.CourseFolder + ID + ".txt");
         try {
             fileWriter = new FileWriter(file);
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -96,7 +105,7 @@ public class Course implements EventListener {
 
     @Override
     public void read() {
-        File file = new File( ID + ".txt");
+        File file = new File( Global.CourseFolder + ID + ".txt");
         try {
             scanner = new Scanner(file);
             name = scanner.nextLine();
@@ -123,7 +132,9 @@ public class Course implements EventListener {
 
     @Override
     public void delete() {
-        File file = new File(ID + ".txt");
-        file.delete();
+        File courseFile = new File(Global.CourseFolder + ID + ".txt");
+        courseFile.delete();
+        File surveyFile = new File(Global.SurveyFolder + ID + ".txt");
+        surveyFile.delete();
     }
 }
