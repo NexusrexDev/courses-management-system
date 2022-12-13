@@ -48,6 +48,7 @@ public class Reports {
             for (String course: courseDetails) {
                 fileWriter.write(course);
             }
+            fileWriter.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

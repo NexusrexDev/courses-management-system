@@ -7,8 +7,8 @@ public class Student extends Person implements EventListener {
     private String name ;
     private String age;
 
-    private final ArrayList<String> courses = new ArrayList<>();
-    private final ArrayList<String> grades = new ArrayList<>();
+    private ArrayList<String> courses = new ArrayList<>();
+    private ArrayList<String> grades = new ArrayList<>();
     private FileWriter writer;
     private File file;
 
@@ -22,7 +22,7 @@ public class Student extends Person implements EventListener {
     Student(String userName ,String password ,String name , String phone,String age , ArrayList<String> courses)
     {
         try {
-            writer = new FileWriter(Global.StudentLogin);
+            writer = new FileWriter(Global.StudentLogin, true);
             writer.append(userName).append("\n");
             writer.append(password).append("\n");
             writer.close();
@@ -53,25 +53,26 @@ public class Student extends Person implements EventListener {
         this.username = userName;
         read();
     }
-
+    // return phone number
     public String getPhone() {
         return phone;
     }
-
+    // update phone number
     public void setPhone(String phone) {
         this.phone = phone;
         update();
     }
-
+    // get student name
     public String getName() {
         return name;
     }
 
+    //update student name
     public void setName(String name) {
         this.name = name;
         update();
     }
-
+    //rerun student age
     public String getAge() {
         return age;
     }
@@ -80,27 +81,31 @@ public class Student extends Person implements EventListener {
         this.age = age;
         update();
     }
-
+    // return student courses
     public ArrayList<String> getCourses() {
         return courses;
     }
 
+    // add course
     public void addCourses(String course) {
         if(!courses.contains(course))
+        {
             courses.add(course);
+            grades.add("");
+        }
         update();
     }
-
+    // return student grad
     public ArrayList<String> getGrades() {
         return grades;
     }
 
 
+    // update changes of user data
     @Override
     public void update()  {
         try {
             writer = new FileWriter(Global.StudentFolder+this.username+".txt");
-            //writer.write(this.username+"\n");
             writer.write(name +"\n");
             writer.write(phone +"\n");
             writer.write(age +"\n");
@@ -117,6 +122,7 @@ public class Student extends Person implements EventListener {
 
     }
 
+    //fill student attribute with file data
     @Override
     public void read() {
 
@@ -135,6 +141,7 @@ public class Student extends Person implements EventListener {
                 grades.add(read.nextLine());
             }
 
+
             read.close();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -142,6 +149,7 @@ public class Student extends Person implements EventListener {
 
     }
 
+    // delete student
     @Override
     public void delete() {
 
@@ -180,7 +188,7 @@ public class Student extends Person implements EventListener {
 
 
     }
-
+    // add grade
     public void addGrades(String courseID,String grade)
     {
         if(courses.contains(courseID)) {
@@ -189,6 +197,7 @@ public class Student extends Person implements EventListener {
         }
 
     }
+    // remove grade
     public void removeGrades(String courseID,String grade)
     {
         if(courses.contains(courseID)) {
@@ -197,7 +206,7 @@ public class Student extends Person implements EventListener {
         }
 
     }
-
+    //remove course
     public void removeCourse(String courseID)
     {
         if(courses.contains(courseID))
@@ -208,7 +217,23 @@ public class Student extends Person implements EventListener {
         }
 
     }
+    // add survey
+    public void createSurvey(String courseID, String comment)
+    {
+        if (courses.contains(courseID)) {
+            file = new File(Global.SurveyFolder + courseID + ".txt");
+            try {
+                writer = new FileWriter(file, true);
+                writer.append(username).append(" : ").append(comment).append("\n");
+                writer.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
+
+    // login student and exception
     public boolean login(String Username, String Password) throws NonexistentUserException {
 
         if(super.login(Username,Password,Global.StudentLogin))
@@ -219,12 +244,13 @@ public class Student extends Person implements EventListener {
         else throw new NonexistentUserException();
     }
 
+    // return student data
     public String toString()
     {
         String header = this.username +" - "+name+"\n";
         String studentAge = "Age : "+age+"\n";
-        String phoneNumber  = "phone : " +phone+"\n";
-        String numberOfCourses ="courses number : "+ courses.size() + "\n";
+        String phoneNumber  = "Phone number : " +phone+"\n";
+        String numberOfCourses ="Number of registered courses : "+ courses.size() + "\n";
         return header+studentAge+phoneNumber+numberOfCourses;
     }
 

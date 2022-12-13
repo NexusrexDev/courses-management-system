@@ -29,7 +29,7 @@ public class Instructor extends Person implements EventListener{
         //Appending the username/password to the login file
         File instructorsFile = new File(Global.InstructorLogin);
         try {
-            fileWriter = new FileWriter(instructorsFile);
+            fileWriter = new FileWriter(instructorsFile, true);
             fileWriter.append(username + "\n");
             fileWriter.append(password + "\n");
             fileWriter.close();
@@ -84,7 +84,7 @@ public class Instructor extends Person implements EventListener{
     public boolean setGrade(String courseID, String userID, String grade){
         Course c = new Course(courseID);
         if (c.getStudentUsernames().contains(userID)) {
-            Student student = new Student();
+            Student student = new Student(userID);
             student.addGrades(courseID,grade);
             return true;
         }
@@ -105,6 +105,22 @@ public class Instructor extends Person implements EventListener{
             return true;
         }
         else return false;
+    }
+
+    // read surveys of a course
+    public void readSurvey(String course) {
+        if (courseID.contains(course)) {
+            File file = new File(Global.SurveyFolder + course + ".txt");
+            try {
+                Scanner surveyReader = new Scanner(file);
+                System.out.println("Surveys for " + course + " course: ");
+                while (surveyReader.hasNextLine()) {
+                    System.out.println(surveyReader.nextLine());
+                }
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     // override toString
@@ -140,28 +156,35 @@ public class Instructor extends Person implements EventListener{
     public void delete(){
         //remove username and password for said instructor
         ArrayList<String> info = new ArrayList<String>();
-        File loginFile = new File("Instructors.txt");
+        File loginFile = new File(Global.InstructorLogin);
         try {
             Scanner scanner = new Scanner(loginFile);
             while (scanner.hasNextLine()){
                 info.add(scanner.nextLine());
             }
             scanner.close();
-            if (info.contains(username)){
-                info.remove(info.indexOf(username)+1);
-                info.remove(info.indexOf(username));
-                fileWriter = new FileWriter(loginFile);
-                for (String i: info) {
-                    fileWriter.write(i+"\n");
-                }
-            }
         }
         catch (Exception e){
             System.out.println(e.getMessage());
         }
 
+        if (info.contains(username)){
+            info.remove(info.indexOf(username)+1);
+            info.remove(username);
+        }
+
+        try {
+            fileWriter = new FileWriter(loginFile);
+            for (String i: info) {
+                fileWriter.write(i+"\n");
+            }
+            fileWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         // remove the instructor file itself
-        File instructorFile = new File(username + ".txt");
+        File instructorFile = new File(Global.InstructorFolder + username + ".txt");
         instructorFile.delete();
 
     }
