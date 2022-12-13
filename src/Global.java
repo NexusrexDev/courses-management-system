@@ -1,5 +1,5 @@
 public final class Global {
-    public static final String AdminLogin = "Login/Admin.txt";
+    public static final String AdminLogin = "Login/Admins.txt";
     public static final String InstructorLogin = "Login/Instructors.txt";
     public static final String StudentLogin = "Login/Students.txt";
     public static final String StudentFolder = "Students/";
