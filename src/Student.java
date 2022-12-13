@@ -7,8 +7,8 @@ public class Student extends Person implements EventListener {
     private String name ;
     private String age;
 
-    private ArrayList<String> courses = new ArrayList<>();
-    private ArrayList<String> grades = new ArrayList<>();
+    private final ArrayList<String> courses = new ArrayList<>();
+    private final ArrayList<String> grades = new ArrayList<>();
     private FileWriter writer;
     private File file;
 
@@ -161,7 +161,7 @@ public class Student extends Person implements EventListener {
         if(lines.contains(username))
         {
             lines.remove(lines.indexOf(username)+1);
-            lines.remove(lines.indexOf(username));
+            lines.remove(username);
         }
 
 
