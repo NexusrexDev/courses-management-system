@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.*;
 
 public class Main {
@@ -155,4 +156,172 @@ public class Main {
             System.out.println(i+1 + " - " + list[i]);
         }
     }
+    public static void showGrades() {
+        if (!student.getCourses().isEmpty()) {
+            System.out.println("Your grades ");
+            System.out.println("_____________________");
+
+            for (int i = 0; i < student.getGrades().size(); i++) {
+                if (!student.getGrades().get(i).equals(""))
+                    System.out.println(student.getCourses().get(i) + " : " + student.getGrades().get(i));
+                else System.out.println(student.getCourses().get(i) + " : " + "unset grade");
+            }
+        } else System.err.println(student.getName() + " do not register any course.");
+    }
+
+    public static void listCourses() {
+        System.out.println("Your courses ");
+        System.out.println("_____________________");
+        if (!student.getCourses().isEmpty()) {
+            int index = 1;
+            for (String course : student.getCourses()) {
+                System.out.println(index + "- " + course);
+                index++;
+            }
+
+        }
+    }
+
+    public static void createSurvey() {
+        input = new Scanner(System.in);
+        boolean err = false;
+        do {
+            clearConsole();
+            listCourses();
+            System.out.println(student.getCourses().size() + 1 + "- Main panel");
+            System.out.println("Select course number : ");
+            try {
+                int selection = input.nextInt();
+                if (selection >= 1 && selection <= student.getCourses().size()) {
+                    System.out.println("Enter your comment : ");
+                    String comment = input.next();
+                    student.createSurvey(student.getCourses().get(selection - 1), comment);
+                    err = true;
+
+                } else if (selection == student.getCourses().size() + 1) {
+                    err = false;
+                } else {
+                    System.out.println("Incorrect choice, please try again");
+                    err = true;
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual number");
+                input.next();
+                err = true;
+            }
+        } while (err);
+
+    }
+
+    public static void updateStudent() {
+        input = new Scanner(System.in);
+        boolean err = true;
+        String newInfo;
+
+        do {
+            clearConsole();
+            System.out.println("Update panel");
+            System.out.println("_____________________");
+            printList("Name : " + student.getName(), "Age : " + student.getAge(), "Phone number : " + student.getPhone(),
+                    "Main panel");
+            System.out.println("Enter your selection : ");
+            try {
+                int selection = input.nextInt();
+                switch (selection) {
+                    case 1:
+                        System.out.println("Enter a new name : ");
+                        input.nextLine();
+                        newInfo = input.nextLine();
+                        student.setName(newInfo);
+                        break;
+                    case 2:
+                        System.out.println("Enter a new age : ");
+                        input.nextLine();
+                        newInfo = input.nextLine();
+                        student.setAge(newInfo);
+                        break;
+                    case 3:
+                        System.out.println("Enter an new phone number : ");
+                        input.nextLine();
+                        newInfo = input.nextLine();
+                        student.setPhone(newInfo);
+                        break;
+                    case 4:
+                        err = false;
+                        break;
+                    default:
+                        System.out.println("Incorrect choice, please try again");
+                        break;
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual number");
+                input.next();
+            }
+        } while (err);
+
+
+    }
+
+    public static void studentPanel() throws IOException {
+        input = new Scanner(System.in);
+        while (true) {
+            clearConsole();
+            System.out.println("Welcome, " + student.getName());
+            printList("View grades", "View courses", "Create survey", "Update information", "Log out");
+            System.out.println("Enter your selection: ");
+            try {
+                int selection = input.nextInt();
+                clearConsole();
+                switch (selection) {
+                    case 1:
+                        showGrades();
+                        Pause();
+                        break;
+                    case 2:
+                        listCourses();
+                        Pause();
+                        break;
+                    case 3:
+                        createSurvey();
+                        break;
+                    case 4:
+                        updateStudent();
+                        break;
+                    case 5:
+                        return;
+                    default:
+                        System.out.println("Incorrect choice, please try again");
+                        break;
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual number");
+                input.next();
+            }
+        }
+
+    }
+
+
+
+    public static void Pause() {
+        Scanner input = new Scanner(System.in);
+        System.out.print("Press Enter to return to main panel");
+        try {
+            input.nextLine();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void clearConsole()  {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            }
+            else {
+                new ProcessBuilder("cmd", "/c", "clear").inheritIO().start().waitFor();
+            }
+        } catch (IOException | InterruptedException ignored) {}
+    }
+
 }
