@@ -8,9 +8,24 @@ public class Main {
 
     public static void main(String[] args) {
         input = new Scanner(System.in);
-        int selection = loginSelector();
-        int panel = login(selection);
-        System.out.println(panel);
+        while (true) {
+            int selection = loginSelector();
+            int panel = login(selection);
+            switch (panel) {
+                case 1:
+                    //Admin panel
+                    adminPanel();
+                    break;
+                case 2:
+                    //Instructor panel
+
+                    break;
+                case 3:
+                    //Student panel
+
+                    break;
+            }
+        }
     }
 
     //This method allows the user to select the type of user he/she wants to login as
@@ -25,7 +40,7 @@ public class Main {
                 if (selection >= 1 && selection <= 3) {
                     return selection;
                 } else {
-                    System.out.println("Incorrect choice, please try again");
+                    System.out.println("Error: Incorrect choice, please try again");
                     error = true;
                 }
             } catch (Exception e) {
@@ -67,6 +82,73 @@ public class Main {
         } while (error);
         return -1;
     }
+
+    //Start of admin panel methods
+    public static void adminPanel() {
+        System.out.println("Welcome, " + admin.getUsername());
+        printList("Manage parent courses", "Manage instructors", "Manage students",
+                "Create a new course", "Create a report", "Log out");
+        while (true) {
+            System.out.print("Enter your selection: ");
+            try {
+                int selection = input.nextInt();
+                switch (selection) {
+                    case 1:
+                        System.out.println("Parent course management");
+                        break;
+                    case 2:
+                        System.out.println("Instructor management");
+                        break;
+                    case 3:
+                        System.out.println("Student management");
+                        break;
+                    case 4:
+                        System.out.println("Course creation");
+                        break;
+                    case 5:
+                        reportCreation();
+                        break;
+                    case 6:
+                        return;
+                    default:
+                        System.out.println("Error: Incorrect choice, please try again");
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual number");
+                input.next(); //Disregarding the entered letter
+            }
+        }
+    }
+
+    public static void reportCreation() {
+        System.out.println("Select report type: ");
+        printList("Courses near to start", "Courses near to end");
+        while (true) {
+            System.out.print("Enter your selection: ");
+            try {
+                int selection = input.nextInt();
+                switch (selection) {
+                    case 1:
+                        admin.createReport(true);
+                        System.out.println("The report is saved in Reports/starting.txt");
+                        break;
+                    case 2:
+                        admin.createReport(false);
+                        System.out.println("The report is saved in Reports/ending.txt");
+                        break;
+                    default:
+                        System.out.println("Error: Incorrect choice, please try again");
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual number");
+                input.next(); //Disregarding the entered letter
+            }
+        }
+    }
+
+    //Start of instructor panel methods
+
+    //Start of student panel methods
 
     public static void printList(String... list) {
         for (int i = 0; i < list.length; i++) {
