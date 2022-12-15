@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
@@ -19,7 +20,7 @@ public class Main {
                     break;
                 case 2:
                     //Instructor panel
-
+                    instructorPanel();
                     break;
                 case 3:
                     //Student panel
@@ -223,7 +224,167 @@ public class Main {
         }
     }
 
-    //Start of instructor panel methods
+    public static void instructorPanel()
+    {
+        while (true) {
+            clearConsole();
+            System.out.println("Welcome, " + instructor.getName());
+            printList("Publish grades", "View courses", "View survey", "Log out");
+            System.out.print("Enter your selection: ");
+            try {
+                int selection = input.nextInt();
+                switch (selection) {
+                    case 1:
+                        publishGrades();
+                        break;
+                    case 2:
+                        viewCourses();
+                        Pause();
+                        break;
+                    case 3:
+                        viewSurvey();
+                        break;
+                    case 4:
+                        return;
+                    default:
+                        System.out.println("Error: Incorrect choice, please try again");
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual number");
+                input.next(); //Disregarding the entered letter
+            }
+        }
+    }
+
+    public static void publishGrades()
+    {
+        ArrayList<String> courses = instructor.getCourseID();
+        //list courses
+        if(instructor.getCourseID().isEmpty())
+        {
+            System.out.println("You have zero courses");
+        }
+        else
+        {
+            while (true)
+            {
+                clearConsole();
+                System.out.println("Available courses: ");
+                printList(courses);
+                System.out.println(courses.size() + 1 + " - Main panel");
+                System.out.print("Enter your selection: ");
+
+                try
+                {
+                    int selection = input.nextInt();
+                    if(selection >=1 && selection <=instructor.getCourseID().size())
+                    {
+                        setGrades(instructor.getCourseID().get(selection-1));
+                    }
+                    else if(selection ==instructor.getCourseID().size()+1) break;
+                    else  System.out.println("Incorrect choice, please try again");
+                }
+                catch (Exception e)
+                {
+                    System.out.println("Error: enter an actual number");
+                    input.next();
+                }
+
+            }
+        }
+    }
+
+    public static void setGrades(String courseID)
+    {
+        Course course = new Course(courseID);
+        for(String student : course.getStudentUsernames())
+        {
+            boolean errComp = false;
+            while (!errComp)
+            {
+                try {
+                    clearConsole();
+                    System.out.print("Set grade for " + student + ": ");
+                    int grade = input.nextInt();
+                    if(grade >=0 && grade<= course.getGrade()) {
+                        instructor.setGrade(courseID,student,grade+"");
+                        errComp = true;
+                    }
+                    else
+                    {
+                        System.out.println("Grade is not in specified range ");
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    System.out.println("Error: enter an actual number");
+                    input.next();
+                }
+            }
+        }
+        System.out.println("All grades are set!");
+        Pause();
+
+    }
+
+    public static void viewCourses()
+    {
+        ArrayList<String> courseIDs = instructor.getCourseID();
+        if(courseIDs.isEmpty())
+        {
+            System.out.println("You have zero courses.");
+        }
+        else
+        {
+            System.out.println("Courses number : "+courseIDs.size());
+            for(String id : courseIDs)
+            {
+                Course course = new Course(id);
+                System.out.println(course.toString());
+            }
+        }
+
+    }
+
+    public static void viewSurvey()
+    {
+        ArrayList<String> courses = instructor.getCourseID();
+        if(instructor.getCourseID().isEmpty())
+        {
+            System.out.println("You have zero courses");
+        }
+        else
+        {
+            while (true)
+            {
+                clearConsole();
+                System.out.println("Available courses: ");
+                printList(courses);
+                System.out.println(courses.size() + 1 + " - Main panel");
+                System.out.print("Enter your selection: ");
+
+                try
+                {
+                    int selection = input.nextInt();
+                    if(selection >=1 && selection <=instructor.getCourseID().size())
+                    {
+                        instructor.readSurvey(instructor.getCourseID().get(selection-1));
+                        Pause();
+                    }
+                    else if(selection ==instructor.getCourseID().size()+1) break;
+                    else  System.out.println("Incorrect choice, please try again");
+                }
+                catch (Exception e)
+                {
+                    System.out.println("Error: enter an actual number");
+                    input.next();
+                }
+
+            }
+        }
+
+    }
 
     //Start of student panel methods
     public static void studentPanel() {
@@ -376,9 +537,15 @@ public class Main {
         }
     }
 
+    public static void printList(ArrayList<String> list) {
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(i+1 + " - " + list.get(i));
+        }
+    }
+
     public static void Pause() {
         Scanner input = new Scanner(System.in);
-        System.out.print("Press Enter to return to the main panel");
+        System.out.print("Press Enter to return ");
         try {
             input.nextLine();
         } catch (Exception e) {

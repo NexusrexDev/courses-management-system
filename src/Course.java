@@ -60,6 +60,10 @@ public class Course implements EventListener {
         return instructorUsername;
     }
 
+    public int getGrade() {
+        return grade;
+    }
+
     public String toString() {
         String courseHeader = parentCourseCode + " - " + ID + " : " + name + "\n";
         String courseInstructor = "Instructor: " + instructorUsername + "\n";
@@ -67,7 +71,10 @@ public class Course implements EventListener {
         String courseRoom = "Room: " + room + "\n";
         String courseStart = "Start Date: " + new SimpleDateFormat("dd-MM-yyyy").format(startDate) + "\n";
         String courseEnd = "End Date: " + new SimpleDateFormat("dd-MM-yyyy").format(endDate) + "\n";
-        String courseStudents = "Number of students: " + studentUsernames.size() + "\n";
+        String courseStudents = "Students: \n";
+        for (String student : studentUsernames) {
+            courseStudents = courseStudents + student + "\n";
+        }
         String courseInfo = courseHeader + courseInstructor + coursePrice + courseRoom
                             + courseStart + courseEnd + courseStudents;
         return courseInfo;

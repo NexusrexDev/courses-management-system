@@ -1,6 +1,7 @@
 import java.util.*;
 import java.io.*;
 
+
 public class Instructor extends Person implements EventListener{
 
     private String name, phoneNumber, salary;
