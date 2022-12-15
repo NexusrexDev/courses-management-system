@@ -2,8 +2,6 @@ import java.util.*;
 import java.io.*;
 
 public class Admin extends Person {
-    private ArrayList<String> instructorUsernames = new ArrayList<>();
-    private ArrayList<String> studentUsernames = new ArrayList<>();
 
     public boolean login(String Username, String Password) throws NonexistentUserException {
          if(super.login(Username, Password, Global.AdminLogin))
@@ -11,37 +9,10 @@ public class Admin extends Person {
          else throw new NonexistentUserException();
     }
 
-    public ArrayList<String> getInstructorUsernames() {
-        //Updates the list
-        readUsernames(instructorUsernames, Global.InstructorLogin);
-        return instructorUsernames;
-    }
-
-    public ArrayList<String> getStudentUsernames() {
-        //Updates the list
-        readUsernames(studentUsernames, Global.StudentLogin);
-        return studentUsernames;
-    }
-
-    private void readUsernames(ArrayList<String> list, String path) {
-        //This method fills the list w/ files from a specific path, used for instructor and student usernames
-        list.clear();
-        File fileList = new File(path);
-        try {
-            Scanner listReader = new Scanner(fileList);
-            while (listReader.hasNextLine()) {
-                list.add(listReader.nextLine()); //Reading the usernames
-                listReader.nextLine(); //Skipping the password line
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
     //This method lists the instructors in the system
     public void listInstructors() {
         //Finding all instructors through the login file
-        readUsernames(instructorUsernames, Global.InstructorLogin);
+        ArrayList<String> instructorUsernames = Global.getUsernameList(Global.InstructorLogin);
         System.out.println("Number of instructors: " + instructorUsernames.size());
         System.out.println("----------");
         for (String str : instructorUsernames) {
@@ -56,7 +27,7 @@ public class Admin extends Person {
     //This method lists the students in the system
     public void listStudents() {
         //Finding all students through the login file
-        readUsernames(studentUsernames, Global.StudentLogin);
+        ArrayList<String> studentUsernames = Global.getUsernameList(Global.StudentLogin);
         System.out.println("Number of students: " + studentUsernames.size());
         System.out.println("----------");
         for (String str : studentUsernames) {

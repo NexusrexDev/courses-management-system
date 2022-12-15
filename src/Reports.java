@@ -4,8 +4,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Reports {
-    private ArrayList<String> courseDetails;
-    private String[] courseIDs;
+    private ArrayList<String> courseDetails, courseIDs;
     private Scanner scanner;
     private FileWriter fileWriter;
     private File file;
@@ -17,10 +16,10 @@ public class Reports {
         courseDetails = new ArrayList<>();
         this.starting = starting;
         //Step 1: Find all files in the Courses folder
-        courseIDs = new File(Global.CourseFolder).list();
+        courseIDs = Global.getDirectoryList(Global.CourseFolder);
         //Step 2: loop on every course, creating a Course object
         for (String id : courseIDs) {
-            Course course = new Course(id.replaceFirst("[.][^.]+$", ""));
+            Course course = new Course(id);
             //Step 3: compare depending on the starting variable (if starting => check start date, else check end date)
             if (starting){
                 long diff = course.getStartDate().getTime() - today.getTime();
