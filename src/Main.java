@@ -1,4 +1,6 @@
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Main {
@@ -159,7 +161,7 @@ public class Main {
             System.out.print("Enter parent course's code: ");
             code = input.next();
             if (existingParentCourses.contains(code.toUpperCase())) {
-                System.out.println("Error: This parent course already exists, please try again.");
+                System.out.println("Error: This parent course already exists.");
                 error = true;
             } else {
                 error = false;
@@ -328,7 +330,7 @@ public class Main {
             System.out.print("Enter the instructor's username: ");
             username = input.next();
             if (existingInstructors.contains(username.toLowerCase())) {
-                System.out.println("Error: This instructor already exists, please try again.");
+                System.out.println("Error: This instructor already exists.");
                 error = true;
             } else {
                 error = false;
@@ -530,7 +532,7 @@ public class Main {
             System.out.print("Enter the student's username: ");
             username = input.next();
             if (existingStudents.contains(username.toLowerCase())) {
-                System.out.println("Error: This student already exists, please try again.");
+                System.out.println("Error: This student already exists.");
                 error = true;
             } else {
                 error = false;
@@ -674,7 +676,6 @@ public class Main {
             }
         } else {
             System.out.println("No students to delete");
-            Pause();
         }
     }
 
@@ -688,7 +689,206 @@ public class Main {
     }
 
     public static void createCourse() {
+        ArrayList<String> existingCourses = Global.getDirectoryList(Global.CourseFolder);
+        ArrayList<String> parentCourses = Global.getDirectoryList(Global.ParentCourseFolder);
+        ArrayList<String> availableInstructors = Global.getUsernameList(Global.InstructorLogin);
+        ArrayList<String> existingStudents = Global.getUsernameList(Global.StudentLogin);
 
+        if (parentCourses.size() == 0 || availableInstructors.size() == 0 || existingStudents.size() == 0) {
+            System.out.println("You cannot create a course due to a lack in " +
+                    "parent courses, instructors or students");
+            Pause();
+            return;
+        }
+
+        boolean error = false;
+        String ID, name, parentCourseCode, instructorUsername, room, price;
+        int days = 0, grade = 0;
+        Date startDate = new Date(), endDate = new Date();
+
+        //Step 1 - Set course ID, compare to existing courses
+        clearConsole();
+        do {
+            System.out.print("Enter course ID: ");
+            ID = input.next();
+            if (existingCourses.contains(ID.toUpperCase())) {
+                System.out.println("Error: This student already exists.");
+                error = true;
+            } else {
+                error = false;
+                input.nextLine();
+            }
+        } while (error);
+
+        //Step 2 - Set course name
+        clearConsole();
+        System.out.print("Enter course name: ");
+        name = input.nextLine();
+
+        //Step 3 - Select from parent courses
+        clearConsole();
+        System.out.println("Select parent course: ");
+        printList(parentCourses);
+        while (true) {
+            System.out.print("Enter your selection: ");
+            try {
+                int selection = input.nextInt();
+                if (selection >= 1 && selection <= parentCourses.size()) {
+                    parentCourseCode = parentCourses.get(selection - 1);
+                    break;
+                } else {
+                    System.out.println("Error: Incorrect choice, please try again");
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual number");
+                input.next(); //Disregarding the entered letter
+            }
+        }
+
+        //Step 4 - Select from instructors
+        clearConsole();
+        System.out.println("Select instructor: ");
+        printList(availableInstructors);
+        while (true) {
+            System.out.print("Enter your selection: ");
+            try {
+                int selection = input.nextInt();
+                if (selection >= 1 && selection <= parentCourses.size()) {
+                    instructorUsername = availableInstructors.get(selection - 1);
+                    break;
+                } else {
+                    System.out.println("Error: Incorrect choice, please try again");
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual number");
+                input.next(); //Disregarding the entered letter
+            }
+        }
+
+        //Step 5 - Set room
+        clearConsole();
+        System.out.print("Enter room: ");
+        room = input.next();
+
+        //Step 6 - Set price
+        clearConsole();
+        System.out.print("Enter price: ");
+        price = input.next();
+
+        //Step 7 - Set days
+        clearConsole();
+        do {
+            try {
+                System.out.print("Enter course days: ");
+                days = input.nextInt();
+                if (days < 1) {
+                    System.out.println("Error: days should be greater than 0");
+                    error = true;
+                } else {
+                    error = false;
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual number");
+                input.next(); //Disregarding the entered letter
+            }
+        } while (error);
+
+        //Step 8 - Set grades
+        clearConsole();
+        do {
+            try {
+                System.out.print("Enter maximum grade: ");
+                grade = input.nextInt();
+                if (grade < 0) {
+                    System.out.println("Error: grade should be greater than 0");
+                    error = true;
+                } else {
+                    error = false;
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual number");
+                input.next(); //Disregarding the entered letter
+            }
+        } while (error);
+
+        //Step 9 - Set start date
+        clearConsole();
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        do {
+            System.out.println("Enter starting date (in a dd-mm-yyyy format): ");
+            String date = input.next();
+            if (!date.matches("\\d{2}-\\d{2}-\\d{4}")) {
+                System.out.println("Error: the date should follow the format");
+                error = true;
+            } else {
+                error = false;
+                try {
+                    startDate = format.parse(date);
+                } catch (ParseException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        } while (error);
+
+        //Step 10 - Set end date
+        clearConsole();
+        do {
+            System.out.println("Enter ending date (in a dd-mm-yyyy format): ");
+            String date = input.next();
+            if (!date.matches("\\d{2}-\\d{2}-\\d{4}")) {
+                System.out.println("Error: the date should follow the format");
+                error = true;
+            } else {
+                error = false;
+                try {
+                    endDate = format.parse(date);
+                } catch (ParseException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        } while (error);
+
+        //Step 11 - Select students
+        clearConsole();
+        ArrayList<String> assignedStudents = new ArrayList<>();
+
+        while (true) {
+            if (existingStudents.size() > 0) {
+                System.out.println("Select students: ");
+                printList(existingStudents);
+                System.out.print("Enter your selection (or type -1 to end selection): ");
+                try {
+                    if (existingStudents.size() > 0) { //If the existing student list is empty (all students are selected
+                        int selection = input.nextInt();
+                        if (selection >= 1 && selection <= existingStudents.size()) {
+                            //Add a student to the assigned list, remove from the existing list
+                            assignedStudents.add(existingStudents.get(selection - 1));
+                            existingStudents.remove(selection - 1);
+                        } else if (selection == -1) {
+                            if (assignedStudents.size() == 0) {
+                                System.out.println("Error: Cannot create course with zero students");
+                            } else break;
+                        } else {
+                            System.out.println("Error: Incorrect choice, please try again");
+                        }
+                    } else {
+                        break;
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error: enter an actual number");
+                    input.next(); //Disregarding the entered letter
+                }
+            } else {
+                System.out.println("All students are registered in this course");
+                Pause();
+                break;
+            }
+        }
+
+        //Step 12 - Create course
+        admin.createCourse(ID.toUpperCase(), name, parentCourseCode, instructorUsername, room, price, days, grade, startDate, endDate, assignedStudents);
+        System.out.println("Course successfully created!");
+        Pause();
     }
 
     public static void createReport() {
@@ -735,7 +935,6 @@ public class Main {
                         break;
                     case 2:
                         viewCourses();
-                        Pause();
                         break;
                     case 3:
                         viewSurvey();
@@ -841,7 +1040,7 @@ public class Main {
                 System.out.println(course.toString());
             }
         }
-
+        Pause();
     }
 
     public static void viewSurvey()
