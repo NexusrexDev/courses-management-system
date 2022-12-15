@@ -9,46 +9,10 @@ public class Admin extends Person {
          else throw new NonexistentUserException();
     }
 
-    //This method lists the instructors in the system
-    public void listInstructors() {
-        //Finding all instructors through the login file
-        ArrayList<String> instructorUsernames = Global.getUsernameList(Global.InstructorLogin);
-        System.out.println("Number of instructors: " + instructorUsernames.size());
-        System.out.println("----------");
-        for (String str : instructorUsernames) {
-            //Reading every instructor's details by creating an object w/ the username
-            Instructor instructor = new Instructor(str);
-            //Printing every instructor's details w/ their toString method
-            System.out.print(instructor.toString());
-            System.out.println("----------");
-        }
-    }
-
-    //This method lists the students in the system
-    public void listStudents() {
-        //Finding all students through the login file
-        ArrayList<String> studentUsernames = Global.getUsernameList(Global.StudentLogin);
-        System.out.println("Number of students: " + studentUsernames.size());
-        System.out.println("----------");
-        for (String str : studentUsernames) {
-            //Reading every student's details by creating an object w/ the username
-            Student student = new Student(str);
-            //Printing every student's details w/ their toString method
-            System.out.print(student.toString());
-            System.out.println("----------");
-        }
-    }
-
     //This method creates a new parent course and saves it
     public void createParentCourse(String parentCourseName, String parentCourseCode) {
         ArrayList<String> initialEmpty = new ArrayList<>();
         ParentCourse newParentCourse = new ParentCourse(parentCourseCode, parentCourseName, initialEmpty);
-    }
-
-    //This method updates the parent course's name
-    public void updateParentCourse(String parentCourseCode, String newName) {
-        ParentCourse parentCourse = new ParentCourse(parentCourseCode);
-        parentCourse.setName(newName);
     }
 
     //This method deletes a parent course, its sub-courses and removes courses from instructors and students
@@ -80,20 +44,6 @@ public class Admin extends Person {
         Instructor newInstructor = new Instructor(username, password, name, phoneNumber, salary, initialEmpty);
     }
 
-    //This method updates an instructor's details (name, phonenumber and salary)
-    public void updateInstructor(String instructorUsername, String newName, String newPhoneNumber, String newSalary) {
-        Instructor instructor = new Instructor(instructorUsername);
-        if (!newName.isEmpty()) {
-            instructor.setName(newName);
-        }
-        if (!newPhoneNumber.isEmpty()) {
-            instructor.setPhoneNumber(newPhoneNumber);
-        }
-        if (!newSalary.isEmpty()) {
-            instructor.setSalary(newSalary);
-        }
-    }
-
     //This method deletes an instructor
     public void deleteInstructor(String instructorUsername) {
         Instructor instructor = new Instructor(instructorUsername);
@@ -121,20 +71,6 @@ public class Admin extends Person {
     public void addStudent(String username, String password, String name, String phone, String age) {
         ArrayList<String> initialEmpty = new ArrayList<>();
         Student newStudent = new Student(username, password, name, phone, age, initialEmpty);
-    }
-
-    //This method updates a student's details
-    public void updateStudent(String studentUsername, String newName, String newAge, String newPhone) {
-        Student student = new Student(studentUsername);
-        if (!newName.isEmpty()) {
-            student.setName(newName);
-        }
-        if (!newPhone.isEmpty()) {
-            student.setPhone(newPhone);
-        }
-        if (!newAge.isEmpty()) {
-            student.setAge(newAge);
-        }
     }
 
     //This method deletes a student

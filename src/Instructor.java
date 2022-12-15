@@ -144,7 +144,7 @@ public class Instructor extends Person implements EventListener{
             for (String courses: courseID){
                 i = i + "\n" + courses;
             }
-            fileWriter.write(i);
+            fileWriter.write(i + "\n");
             fileWriter.close();
         }
         catch (Exception e){

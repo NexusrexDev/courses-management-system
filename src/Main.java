@@ -1,5 +1,4 @@
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
@@ -95,13 +94,13 @@ public class Main {
                         parentCourseMenu();
                         break;
                     case 2:
-                        System.out.println("Instructor management");
+                        instructorMenu();
                         break;
                     case 3:
-                        System.out.println("Student management");
+                        studentMenu();
                         break;
                     case 4:
-                        System.out.println("Course creation");
+                        createCourse();
                         break;
                     case 5:
                         createReport();
@@ -121,6 +120,7 @@ public class Main {
     public static void parentCourseMenu() {
         while (true) {
             clearConsole();
+            System.out.println("Manage parent courses");
             printList("Add a parent course", "Update a parent course", "Delete a parent course",
                     "View parent courses", "Main panel");
             System.out.print("Enter your selection: ");
@@ -128,10 +128,10 @@ public class Main {
                 int selection = input.nextInt();
                 switch (selection) {
                     case 1:
-                        System.out.println("Adding a parent course");
+                        createParentCourse();
                         break;
                     case 2:
-                        System.out.println("Updating a parent course");
+                        updateParentCourse();
                         break;
                     case 3:
                         deleteParentCourse();
@@ -152,33 +152,119 @@ public class Main {
     }
 
     public static void createParentCourse() {
-
+        boolean error = false;
+        String code, name;
+        ArrayList<String> existingParentCourses = Global.getDirectoryList(Global.ParentCourseFolder);
+        do {
+            System.out.print("Enter parent course's code: ");
+            code = input.next();
+            if (existingParentCourses.contains(code.toUpperCase())) {
+                System.out.println("Error: This parent course already exists, please try again.");
+                error = true;
+            } else {
+                error = false;
+            }
+        } while (error);
+        input.nextLine();
+        do {
+            System.out.print("Enter parent course's name: ");
+            name = input.nextLine();
+            if (name.isEmpty()) {
+                System.out.println("Error: No name was given for this parent course, please try again");
+                error = true;
+            } else {
+                error = false;
+            }
+        } while (error);
+        admin.createParentCourse(name, code.toUpperCase());
+        System.out.println("Parent course created successfully!");
+        Pause();
     }
 
     public static void updateParentCourse() {
+        ArrayList<String> existingParentCourses = Global.getDirectoryList(Global.ParentCourseFolder);
+        if (existingParentCourses.size() > 0) {
+            while (true) {
+                clearConsole();
+                System.out.println("Available parent courses: ");
+                printList(existingParentCourses);
+                System.out.println(existingParentCourses.size() + 1 + " - Main panel");
+                System.out.print("Enter your selection: ");
+                try
+                {
+                    int selection = input.nextInt();
+                    if(selection >=1 && selection <= existingParentCourses.size())
+                    {
+                        updateParentCourseDetails(existingParentCourses.get(selection-1));
+                    }
+                    else if(selection == existingParentCourses.size()+1) break;
+                    else  System.out.println("Incorrect choice, please try again");
+                }
+                catch (Exception e)
+                {
+                    System.out.println("Error: enter an actual number");
+                    input.next();
+                }
+            }
+        } else {
+            System.out.println("There are 0 parent courses");
+            Pause();
+        }
+    }
 
+    public static void updateParentCourseDetails(String parentCourseCode) {
+        ParentCourse parentCourse = new ParentCourse(parentCourseCode);
+        while (true) {
+            System.out.println("Available details: ");
+            printList("Name: " + parentCourse.getName(), "Main panel");
+            System.out.print("Enter your selection: ");
+            try {
+                int selection = input.nextInt();
+                switch (selection) {
+                    case 1:
+                        System.out.print("Enter a new name: ");
+                        input.nextLine();
+                        String newName = input.nextLine();
+                        parentCourse.setName(newName);
+                        break;
+                    case 2:
+                        return;
+                    default:
+                        System.out.println("Incorrect choice, please try again");
+                        break;
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual number");
+                input.next();
+            }
+        }
     }
 
     public static void deleteParentCourse() {
         ArrayList<String> parentCourses = Global.getDirectoryList(Global.ParentCourseFolder);
+        clearConsole();
         if (parentCourses.size() > 0) {
             System.out.println("Select parent course to delete: ");
-            printList(String.valueOf(parentCourses), "Main panel");
-            System.out.println("Enter your selection: ");
-            try {
-                int selection = input.nextInt();
-                if (selection >= 1 && selection <= parentCourses.size()) {
-                    admin.deleteParentCourse(parentCourses.get(selection - 1));
-                    System.out.println("Parent course deleted successfully!");
-                    Pause();
-                } else if (selection == parentCourses.size() + 1) {
-                    return;
-                } else {
-                    System.out.println("Error: Incorrect choice, please try again");
+            printList(parentCourses);
+            System.out.println(parentCourses.size() + 1 + " - Main panel");
+            while (true) {
+                System.out.print("Enter your selection: ");
+                try {
+                    int selection = input.nextInt();
+                    if (selection >= 1 && selection <= parentCourses.size()) {
+                        admin.deleteParentCourse(parentCourses.get(selection - 1));
+                        System.out.println("Parent course deleted successfully!");
+                        Pause();
+                        return;
+                    } else if (selection == parentCourses.size() + 1) {
+                        return;
+                    } else {
+                        System.out.println("Error: Incorrect choice, please try again");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error: enter an actual number");
+                    input.next(); //Disregarding the entered letter
                 }
-            } catch (Exception e) {
-                System.out.println("Error: enter an actual number");
-                input.next(); //Disregarding the entered letter
             }
         } else {
             System.out.println("No parent courses to delete");
@@ -194,6 +280,415 @@ public class Main {
             System.out.println(parentCourse.toString());
         }
         Pause();
+    }
+
+    public static void instructorMenu() {
+        while (true) {
+            clearConsole();
+            System.out.println("Manage instructors");
+            printList("Add an instructor", "Update an instructor", "Delete an instructor",
+                    "View instructors", "Main panel");
+            System.out.print("Enter your selection: ");
+            try {
+                int selection = input.nextInt();
+                switch (selection) {
+                    case 1:
+                        createInstructor();
+                        break;
+                    case 2:
+                        modifyInstructor();
+                        break;
+                    case 3:
+                        deleteInstructor();
+                        Pause();
+                        break;
+                    case 4:
+                        listInstructors();
+                        Pause();
+                        break;
+                    case 5:
+                        return;
+                    default:
+                        System.out.println("Error: Incorrect choice, please try again");
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual number");
+                input.next(); //Disregarding the entered letter
+            }
+        }
+    }
+
+    public static void createInstructor() {
+        boolean error = false;
+        String username, password, name, phoneNumber;
+        int salary = 0;
+        ArrayList<String> existingInstructors = Global.getUsernameList(Global.InstructorLogin);
+        //Get username
+        do {
+            System.out.print("Enter the instructor's username: ");
+            username = input.next();
+            if (existingInstructors.contains(username.toLowerCase())) {
+                System.out.println("Error: This instructor already exists, please try again.");
+                error = true;
+            } else {
+                error = false;
+            }
+        } while (error);
+        //Get password
+        System.out.print("Enter the instructor's password: ");
+        password = input.next();
+        input.nextLine();
+        //Get name
+        do {
+            System.out.print("Enter the instructor's name: ");
+            name = input.nextLine();
+            if (name.isEmpty()) {
+                System.out.println("Error: No name was given for this instructor, please try again");
+                error = true;
+            } else {
+                error = false;
+            }
+        } while (error);
+        //Get phonenumber
+        System.out.print("Enter the instructor's phone number: ");
+        phoneNumber = input.next();
+        //Get salary
+        do {
+            try {
+                System.out.print("Enter the instructor's salary: ");
+                salary = input.nextInt();
+                if (salary < 0) {
+                    System.out.println("Error: the salary couldn't be a negative number");
+                    error = true;
+                } else {
+                    error = false;
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual salary number");
+                input.next(); //Disregarding the entered letter
+            }
+        } while (error);
+        admin.addInstructor(username.toLowerCase(), password, name, phoneNumber, salary + "");
+        System.out.println("Instructor successfully added!");
+        Pause();
+    }
+
+    public static void modifyInstructor() {
+        ArrayList<String> existingInstructors = Global.getUsernameList(Global.InstructorLogin);
+        if (existingInstructors.size() > 0) {
+            while (true) {
+                clearConsole();
+                System.out.println("Available instructors: ");
+                printList(existingInstructors);
+                System.out.println(existingInstructors.size() + 1 + " - Main panel");
+                System.out.print("Enter your selection: ");
+                try
+                {
+                    int selection = input.nextInt();
+                    if(selection >=1 && selection <= existingInstructors.size())
+                    {
+                        modifyInstructorDetails(existingInstructors.get(selection-1));
+                    }
+                    else if(selection == existingInstructors.size()+1) break;
+                    else  System.out.println("Incorrect choice, please try again");
+                }
+                catch (Exception e)
+                {
+                    System.out.println("Error: enter an actual number");
+                    input.next();
+                }
+            }
+        } else {
+            System.out.println("There are 0 instructors");
+            Pause();
+        }
+    }
+
+    public static void modifyInstructorDetails(String instructorUsername) {
+        Instructor currentInstructor = new Instructor(instructorUsername);
+        while (true) {
+            System.out.println("Available details: ");
+            printList("Name: " + currentInstructor.getName(), "Phone number: " + currentInstructor.getPhoneNumber(),
+                    "Salary: " + currentInstructor.getSalary(), "Main panel");
+            System.out.print("Enter your selection: ");
+            try {
+                int selection = input.nextInt();
+                switch (selection) {
+                    case 1:
+                        System.out.print("Enter a new name: ");
+                        input.nextLine();
+                        String newName = input.nextLine();
+                        currentInstructor.setName(newName);
+                        break;
+                    case 2:
+                        System.out.print("Enter a new phone number: ");
+                        input.nextLine();
+                        String newPhone = input.nextLine();
+                        currentInstructor.setPhoneNumber(newPhone);
+                        break;
+                    case 3:
+                        System.out.print("Enter a new salary: ");
+                        input.nextLine();
+                        String newSalary = input.nextLine();
+                        currentInstructor.setSalary(newSalary);
+                        break;
+                    case 4:
+                        return;
+                    default:
+                        System.out.println("Incorrect choice, please try again");
+                        break;
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual number");
+                input.next();
+            }
+        }
+    }
+
+    public static void deleteInstructor() {
+        ArrayList<String> instructorUsernames = Global.getUsernameList(Global.InstructorLogin);
+        clearConsole();
+        if (instructorUsernames.size() > 0) {
+            System.out.println("Select instructor to delete: ");
+            printList(instructorUsernames);
+            System.out.println(instructorUsernames.size() + 1 + " - Main panel");
+            while (true) {
+                System.out.print("Enter your selection: ");
+                try {
+                    int selection = input.nextInt();
+                    if (selection >= 1 && selection <= instructorUsernames.size()) {
+                        admin.deleteInstructor(instructorUsernames.get(selection - 1));
+                        System.out.println("Instructor deleted successfully!");
+                        return;
+                    } else if (selection == instructorUsernames.size() + 1) {
+                        return;
+                    } else {
+                        System.out.println("Error: Incorrect choice, please try again");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error: enter an actual number");
+                    input.next(); //Disregarding the entered letter
+                }
+            }
+        } else {
+            System.out.println("No instructors to delete");
+        }
+    }
+
+    public static void listInstructors() {
+        ArrayList<String> instructorList = Global.getUsernameList(Global.InstructorLogin);
+        System.out.println("Instructors: " + instructorList.size());
+        for (String instructorUsername : instructorList) {
+            Instructor listableInstructor = new Instructor(instructorUsername);
+            System.out.println(listableInstructor.toString());
+        }
+    }
+
+    public static void studentMenu() {
+        while (true) {
+            clearConsole();
+            System.out.println("Manage students");
+            printList("Add a student", "Update a student", "Delete a student",
+                    "View students", "Main panel");
+            System.out.print("Enter your selection: ");
+            try {
+                int selection = input.nextInt();
+                switch (selection) {
+                    case 1:
+                        createStudent();
+                        break;
+                    case 2:
+                        modifyStudent();
+                        break;
+                    case 3:
+                        deleteStudent();
+                        Pause();
+                        break;
+                    case 4:
+                        listStudents();
+                        Pause();
+                        break;
+                    case 5:
+                        return;
+                    default:
+                        System.out.println("Error: Incorrect choice, please try again");
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual number");
+                input.next(); //Disregarding the entered letter
+            }
+        }
+    }
+
+    public static void createStudent() {
+        boolean error = false;
+        String username, password, name, phoneNumber;
+        int age = 0;
+        ArrayList<String> existingStudents = Global.getUsernameList(Global.StudentLogin);
+        //Get username
+        do {
+            System.out.print("Enter the student's username: ");
+            username = input.next();
+            if (existingStudents.contains(username.toLowerCase())) {
+                System.out.println("Error: This student already exists, please try again.");
+                error = true;
+            } else {
+                error = false;
+            }
+        } while (error);
+        //Get password
+        System.out.print("Enter the student's password: ");
+        password = input.next();
+        input.nextLine();
+        //Get name
+        do {
+            System.out.print("Enter the student's name: ");
+            name = input.nextLine();
+            if (name.isEmpty()) {
+                System.out.println("Error: No name was given for this student, please try again");
+                error = true;
+            } else {
+                error = false;
+            }
+        } while (error);
+        //Get phonenumber
+        System.out.print("Enter the student's phone number: ");
+        phoneNumber = input.next();
+        //Get age
+        do {
+            try {
+                System.out.print("Enter the student's age: ");
+                age = input.nextInt();
+                if (age < 0) {
+                    System.out.println("Error: the age couldn't be a negative number");
+                    error = true;
+                } else {
+                    error = false;
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual age");
+                input.next(); //Disregarding the entered letter
+            }
+        } while (error);
+        admin.addStudent(username.toLowerCase(), password, name, phoneNumber, age + "");
+        System.out.println("Student successfully added!");
+        Pause();
+    }
+
+    public static void modifyStudent() {
+        ArrayList<String> existingStudents = Global.getUsernameList(Global.StudentLogin);
+        if (existingStudents.size() > 0) {
+            while (true) {
+                clearConsole();
+                System.out.println("Available students: ");
+                printList(existingStudents);
+                System.out.println(existingStudents.size() + 1 + " - Main panel");
+                System.out.print("Enter your selection: ");
+                try
+                {
+                    int selection = input.nextInt();
+                    if(selection >=1 && selection <= existingStudents.size())
+                    {
+                        modifyStudentDetails(existingStudents.get(selection-1));
+                    }
+                    else if(selection == existingStudents.size()+1) break;
+                    else  System.out.println("Incorrect choice, please try again");
+                }
+                catch (Exception e)
+                {
+                    System.out.println("Error: enter an actual number");
+                    input.next();
+                }
+            }
+        } else {
+            System.out.println("There are 0 students");
+            Pause();
+        }
+    }
+
+    public static void modifyStudentDetails(String studentUsername) {
+        Student currentStudent = new Student(studentUsername);
+        while (true) {
+            System.out.println("Available details: ");
+            printList("Name: " + currentStudent.getName(), "Age: " + currentStudent.getAge(),
+                    "Phone number: " + currentStudent.getPhone(), "Main panel");
+            System.out.print("Enter your selection: ");
+            try {
+                int selection = input.nextInt();
+                switch (selection) {
+                    case 1:
+                        System.out.print("Enter a new name: ");
+                        input.nextLine();
+                        String newName = input.nextLine();
+                        currentStudent.setName(newName);
+                        break;
+                    case 2:
+                        System.out.print("Enter a new age: ");
+                        input.nextLine();
+                        String newAge = input.nextLine();
+                        currentStudent.setAge(newAge);
+                        break;
+                    case 3:
+                        System.out.print("Enter a new phone number: ");
+                        input.nextLine();
+                        String newPhone = input.nextLine();
+                        currentStudent.setPhone(newPhone);
+                        break;
+                    case 4:
+                        return;
+                    default:
+                        System.out.println("Incorrect choice, please try again");
+                        break;
+                }
+            } catch (Exception e) {
+                System.out.println("Error: enter an actual number");
+                input.next();
+            }
+        }
+    }
+
+    public static void deleteStudent() {
+        ArrayList<String> studentList = Global.getUsernameList(Global.StudentLogin);
+        clearConsole();
+        if (studentList.size() > 0) {
+            System.out.println("Select student to delete: ");
+            printList(studentList);
+            System.out.println(studentList.size() + 1 + " - Main panel");
+            while (true) {
+                System.out.print("Enter your selection: ");
+                try {
+                    int selection = input.nextInt();
+                    if (selection >= 1 && selection <= studentList.size()) {
+                        admin.deleteStudent(studentList.get(selection - 1));
+                        System.out.println("Student deleted successfully!");
+                        return;
+                    } else if (selection == studentList.size() + 1) {
+                        return;
+                    } else {
+                        System.out.println("Error: Incorrect choice, please try again");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error: enter an actual number");
+                    input.next(); //Disregarding the entered letter
+                }
+            }
+        } else {
+            System.out.println("No students to delete");
+            Pause();
+        }
+    }
+
+    public static void listStudents() {
+        ArrayList<String> studentList = Global.getUsernameList(Global.StudentLogin);
+        System.out.println("Students: " + studentList.size());
+        for (String studentUsername : studentList) {
+            Student listableStudent = new Student(studentUsername);
+            System.out.println(listableStudent.toString());
+        }
+    }
+
+    public static void createCourse() {
+
     }
 
     public static void createReport() {
@@ -224,6 +719,7 @@ public class Main {
         }
     }
 
+    //Instructor methods
     public static void instructorPanel()
     {
         while (true) {
@@ -263,6 +759,7 @@ public class Main {
         if(instructor.getCourseID().isEmpty())
         {
             System.out.println("You have zero courses");
+            Pause();
         }
         else
         {
@@ -391,7 +888,7 @@ public class Main {
         while (true) {
             clearConsole();
             System.out.println("Welcome, " + student.getName());
-            printList("View grades", "View courses", "Create survey", "Update information", "Log out");
+            printList("View grades", "View courses", "View all courses", "Create survey", "Update information", "Log out");
             System.out.println("Enter your selection: ");
             try {
                 int selection = input.nextInt();
@@ -406,12 +903,16 @@ public class Main {
                         Pause();
                         break;
                     case 3:
-                        createSurvey();
+                        listAllCourses();
+                        Pause();
                         break;
                     case 4:
-                        updateStudent();
+                        createSurvey();
                         break;
                     case 5:
+                        updateStudent();
+                        break;
+                    case 6:
                         return;
                     default:
                         System.out.println("Incorrect choice, please try again");
@@ -450,8 +951,16 @@ public class Main {
         }
     }
 
+    public static void listAllCourses() {
+        ArrayList<String> courses = Global.getDirectoryList(Global.CourseFolder);
+        System.out.println("All courses: " + courses.size());
+        for (String courseID: courses) {
+            Course course = new Course(courseID);
+            System.out.println(course.toString());
+        }
+    }
+
     public static void createSurvey() {
-        input = new Scanner(System.in);
         boolean err = false;
         do {
             clearConsole();
@@ -482,7 +991,6 @@ public class Main {
     }
 
     public static void updateStudent() {
-        input = new Scanner(System.in);
         boolean err = true;
         String newInfo;
 
@@ -526,8 +1034,6 @@ public class Main {
                 input.next();
             }
         } while (err);
-
-
     }
 
     //Helper functions
