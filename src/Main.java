@@ -89,77 +89,98 @@ public class Main {
 
     //Start of admin panel methods
     public static void adminPanel() {
+        boolean clear = true;
         while (true) {
-            clearConsole();
-            System.out.println("Welcome, " + admin.getUsername());
-            printList("Manage parent courses", "Manage instructors", "Manage students",
-                    "Create a new course", "Create a report", "Log out");
+            if (clear) {
+                clearConsole();
+                System.out.println("Welcome, " + admin.getUsername());
+                printList("Manage parent courses", "Manage instructors", "Manage students",
+                        "Create a new course", "Create a report", "Log out");
+            }
             System.out.print("Enter your selection: ");
             try {
                 int selection = input.nextInt();
                 switch (selection) {
                     case 1:
                         parentCourseMenu();
+                        clear = true;
                         break;
                     case 2:
                         instructorMenu();
+                        clear = true;
                         break;
                     case 3:
                         studentMenu();
+                        clear = true;
                         break;
                     case 4:
                         createCourse();
+                        clear = true;
                         break;
                     case 5:
                         createReport();
+                        clear = true;
                         break;
                     case 6:
                         return;
                     default:
                         System.out.println("Error: Incorrect choice, please try again");
+                        clear = false;
                 }
             } catch (Exception e) {
                 System.out.println("Error: enter an actual number");
                 input.next(); //Disregarding the entered letter
+                clear = false;
             }
         }
     }
 
     public static void parentCourseMenu() {
+        boolean clear = true;
         while (true) {
-            clearConsole();
-            System.out.println("Manage parent courses");
-            printList("Add a parent course", "Update a parent course", "Delete a parent course",
-                    "View parent courses", "Main panel");
+            if (clear) {
+                clearConsole();
+                System.out.println("Manage parent courses");
+                printList("Add a parent course", "Update a parent course", "Delete a parent course",
+                        "View parent courses", "Main panel");
+            }
             System.out.print("Enter your selection: ");
             try {
                 int selection = input.nextInt();
                 switch (selection) {
                     case 1:
                         createParentCourse();
+                        clear = true;
                         break;
                     case 2:
                         updateParentCourse();
+                        clear = true;
                         break;
                     case 3:
                         deleteParentCourse();
+                        clear = true;
                         break;
                     case 4:
                         listParentCourses();
+                        clear = true;
                         break;
                     case 5:
                         return;
                     default:
                         System.out.println("Error: Incorrect choice, please try again");
+                        clear = false;
                 }
             } catch (Exception e) {
                 System.out.println("Error: enter an actual number");
                 input.next(); //Disregarding the entered letter
+                clear = false;
             }
         }
     }
 
     public static void createParentCourse() {
+        clearConsole();
+        System.out.println("Create a parent course:");
         boolean error = false;
         String code, name;
         ArrayList<String> existingParentCourses = Global.getDirectoryList(Global.ParentCourseFolder);
@@ -191,12 +212,16 @@ public class Main {
 
     public static void updateParentCourse() {
         ArrayList<String> existingParentCourses = Global.getDirectoryList(Global.ParentCourseFolder);
+        boolean clear = true;
         if (existingParentCourses.size() > 0) {
             while (true) {
-                clearConsole();
-                System.out.println("Available parent courses: ");
-                printList(existingParentCourses);
-                System.out.println(existingParentCourses.size() + 1 + " - Main panel");
+                if (clear) {
+                    clearConsole();
+                    System.out.println("Update a parent course");
+                    System.out.println("Available parent courses: ");
+                    printList(existingParentCourses);
+                    System.out.println(existingParentCourses.size() + 1 + " - Main panel");
+                }
                 System.out.print("Enter your selection: ");
                 try
                 {
@@ -204,14 +229,19 @@ public class Main {
                     if(selection >=1 && selection <= existingParentCourses.size())
                     {
                         updateParentCourseDetails(existingParentCourses.get(selection-1));
+                        clear = true;
                     }
                     else if(selection == existingParentCourses.size()+1) break;
-                    else  System.out.println("Incorrect choice, please try again");
+                    else {
+                        System.out.println("Incorrect choice, please try again");
+                        clear = false;
+                    }
                 }
                 catch (Exception e)
                 {
                     System.out.println("Error: enter an actual number");
                     input.next();
+                    clear = false;
                 }
             }
         } else {
@@ -222,9 +252,14 @@ public class Main {
 
     public static void updateParentCourseDetails(String parentCourseCode) {
         ParentCourse parentCourse = new ParentCourse(parentCourseCode);
+        boolean clear = true;
         while (true) {
-            System.out.println("Available details: ");
-            printList("Name: " + parentCourse.getName(), "Main panel");
+            if (clear) {
+                clearConsole();
+                System.out.println("Update " + parentCourse.getName() + ": ");
+                System.out.println("Available details: ");
+                printList("Name: " + parentCourse.getName(), "Main panel");
+            }
             System.out.print("Enter your selection: ");
             try {
                 int selection = input.nextInt();
@@ -234,16 +269,19 @@ public class Main {
                         input.nextLine();
                         String newName = input.nextLine();
                         parentCourse.setName(newName);
+                        clear = true;
                         break;
                     case 2:
                         return;
                     default:
                         System.out.println("Incorrect choice, please try again");
+                        clear = false;
                         break;
                 }
             } catch (Exception e) {
                 System.out.println("Error: enter an actual number");
                 input.next();
+                clear = false;
             }
         }
     }
@@ -251,6 +289,7 @@ public class Main {
     public static void deleteParentCourse() {
         ArrayList<String> parentCourses = Global.getDirectoryList(Global.ParentCourseFolder);
         clearConsole();
+        System.out.println("Delete a parent course: ");
         if (parentCourses.size() > 0) {
             System.out.println("Select parent course to delete: ");
             printList(parentCourses);
@@ -281,6 +320,7 @@ public class Main {
     }
 
     public static void listParentCourses() {
+        clearConsole();
         ArrayList<String> parentCourses = Global.getDirectoryList(Global.ParentCourseFolder);
         System.out.println("Parent courses: " + parentCourses.size());
         for (String parentCourseCode : parentCourses) {
@@ -291,42 +331,52 @@ public class Main {
     }
 
     public static void instructorMenu() {
+        boolean clear = true;
         while (true) {
-            clearConsole();
-            System.out.println("Manage instructors");
-            printList("Add an instructor", "Update an instructor", "Delete an instructor",
-                    "View instructors", "Main panel");
+            if (clear) {
+                clearConsole();
+                System.out.println("Manage instructors");
+                printList("Add an instructor", "Update an instructor", "Delete an instructor",
+                        "View instructors", "Main panel");
+            }
             System.out.print("Enter your selection: ");
             try {
                 int selection = input.nextInt();
                 switch (selection) {
                     case 1:
                         createInstructor();
+                        clear = true;
                         break;
                     case 2:
                         modifyInstructor();
+                        clear = true;
                         break;
                     case 3:
                         deleteInstructor();
-                        Pause();
+                        clear = true;
                         break;
                     case 4:
                         listInstructors();
                         Pause();
+                        clear = true;
                         break;
                     case 5:
                         return;
                     default:
                         System.out.println("Error: Incorrect choice, please try again");
+                        clear = false;
                 }
             } catch (Exception e) {
                 System.out.println("Error: enter an actual number");
                 input.next(); //Disregarding the entered letter
+                clear = false;
             }
         }
     }
 
     public static void createInstructor() {
+        clearConsole();
+        System.out.println("Add an instructor: ");
         boolean error = false;
         String username, password, name, phoneNumber;
         int salary = 0;
@@ -383,12 +433,16 @@ public class Main {
 
     public static void modifyInstructor() {
         ArrayList<String> existingInstructors = Global.getUsernameList(Global.InstructorLogin);
+        boolean clear = true;
         if (existingInstructors.size() > 0) {
             while (true) {
-                clearConsole();
-                System.out.println("Available instructors: ");
-                printList(existingInstructors);
-                System.out.println(existingInstructors.size() + 1 + " - Main panel");
+                if (clear) {
+                    clearConsole();
+                    System.out.println("Update an instructor: ");
+                    System.out.println("Available instructors: ");
+                    printList(existingInstructors);
+                    System.out.println(existingInstructors.size() + 1 + " - Main panel");
+                }
                 System.out.print("Enter your selection: ");
                 try
                 {
@@ -396,17 +450,24 @@ public class Main {
                     if(selection >=1 && selection <= existingInstructors.size())
                     {
                         modifyInstructorDetails(existingInstructors.get(selection-1));
+                        clear = true;
                     }
                     else if(selection == existingInstructors.size()+1) break;
-                    else  System.out.println("Incorrect choice, please try again");
+                    else {
+                        System.out.println("Incorrect choice, please try again");
+                        clear = false;
+                    }
                 }
                 catch (Exception e)
                 {
                     System.out.println("Error: enter an actual number");
                     input.next();
+                    clear = false;
                 }
             }
         } else {
+            clearConsole();
+            System.out.println("Update an instructor: ");
             System.out.println("There are 0 instructors");
             Pause();
         }
@@ -414,41 +475,63 @@ public class Main {
 
     public static void modifyInstructorDetails(String instructorUsername) {
         Instructor currentInstructor = new Instructor(instructorUsername);
+        boolean clear = true;
         while (true) {
-            System.out.println("Available details: ");
-            printList("Name: " + currentInstructor.getName(), "Phone number: " + currentInstructor.getPhoneNumber(),
-                    "Salary: " + currentInstructor.getSalary(), "Main panel");
+            if (clear) {
+                clearConsole();
+                System.out.println("Update " + currentInstructor.getName() + ": ");
+                System.out.println("Available details: ");
+                printList("Name: " + currentInstructor.getName(), "Phone number: " + currentInstructor.getPhoneNumber(),
+                        "Salary: " + currentInstructor.getSalary(), "Main panel");
+            }
             System.out.print("Enter your selection: ");
             try {
                 int selection = input.nextInt();
                 switch (selection) {
                     case 1:
-                        System.out.print("Enter a new name: ");
-                        input.nextLine();
-                        String newName = input.nextLine();
+                        String newName;
+                        boolean error = false;
+                        do {
+                            System.out.print("Enter a new name: ");
+                            input.nextLine();
+                            newName = input.nextLine();
+                            if (newName.isEmpty()) {
+                                System.out.println("Error: empty name");
+                                error = true;
+                            } else error = false;
+                        } while (error);
                         currentInstructor.setName(newName);
+                        clear = true;
                         break;
                     case 2:
                         System.out.print("Enter a new phone number: ");
                         input.nextLine();
                         String newPhone = input.nextLine();
-                        currentInstructor.setPhoneNumber(newPhone);
+                        if (isInteger(newPhone)) {
+                            currentInstructor.setPhoneNumber(newPhone);
+                        }
+                        clear = true;
                         break;
                     case 3:
                         System.out.print("Enter a new salary: ");
                         input.nextLine();
                         String newSalary = input.nextLine();
-                        currentInstructor.setSalary(newSalary);
+                        if (isInteger(newSalary)) {
+                            currentInstructor.setSalary(newSalary);
+                        }
+                        clear = true;
                         break;
                     case 4:
                         return;
                     default:
                         System.out.println("Incorrect choice, please try again");
+                        clear = false;
                         break;
                 }
             } catch (Exception e) {
                 System.out.println("Error: enter an actual number");
                 input.next();
+                clear = false;
             }
         }
     }
@@ -456,6 +539,7 @@ public class Main {
     public static void deleteInstructor() {
         ArrayList<String> instructorUsernames = Global.getUsernameList(Global.InstructorLogin);
         clearConsole();
+        System.out.println("Delete an instructor: ");
         if (instructorUsernames.size() > 0) {
             System.out.println("Select instructor to delete: ");
             printList(instructorUsernames);
@@ -467,6 +551,7 @@ public class Main {
                     if (selection >= 1 && selection <= instructorUsernames.size()) {
                         admin.deleteInstructor(instructorUsernames.get(selection - 1));
                         System.out.println("Instructor deleted successfully!");
+                        Pause();
                         return;
                     } else if (selection == instructorUsernames.size() + 1) {
                         return;
@@ -480,10 +565,12 @@ public class Main {
             }
         } else {
             System.out.println("No instructors to delete");
+            Pause();
         }
     }
 
     public static void listInstructors() {
+        clearConsole();
         ArrayList<String> instructorList = Global.getUsernameList(Global.InstructorLogin);
         System.out.println("Instructors: " + instructorList.size());
         for (String instructorUsername : instructorList) {
@@ -493,37 +580,45 @@ public class Main {
     }
 
     public static void studentMenu() {
+        boolean clear = true;
         while (true) {
-            clearConsole();
-            System.out.println("Manage students");
-            printList("Add a student", "Update a student", "Delete a student",
-                    "View students", "Main panel");
+            if (clear) {
+                clearConsole();
+                System.out.println("Manage students:");
+                printList("Add a student", "Update a student", "Delete a student",
+                        "View students", "Main panel");
+            }
             System.out.print("Enter your selection: ");
             try {
                 int selection = input.nextInt();
                 switch (selection) {
                     case 1:
                         createStudent();
+                        clear = true;
                         break;
                     case 2:
                         modifyStudent();
+                        clear = true;
                         break;
                     case 3:
                         deleteStudent();
-                        Pause();
+                        clear = true;
                         break;
                     case 4:
                         listStudents();
                         Pause();
+                        clear = true;
                         break;
                     case 5:
                         return;
                     default:
                         System.out.println("Error: Incorrect choice, please try again");
+                        clear = false;
                 }
             } catch (Exception e) {
                 System.out.println("Error: enter an actual number");
                 input.next(); //Disregarding the entered letter
+                clear = false;
             }
         }
     }
@@ -585,12 +680,16 @@ public class Main {
 
     public static void modifyStudent() {
         ArrayList<String> existingStudents = Global.getUsernameList(Global.StudentLogin);
+        clearConsole();
+        boolean clear = true;
         if (existingStudents.size() > 0) {
             while (true) {
-                clearConsole();
-                System.out.println("Available students: ");
-                printList(existingStudents);
-                System.out.println(existingStudents.size() + 1 + " - Main panel");
+                if (clear) {
+                    clearConsole();
+                    System.out.println("Available students: ");
+                    printList(existingStudents);
+                    System.out.println(existingStudents.size() + 1 + " - Main panel");
+                }
                 System.out.print("Enter your selection: ");
                 try
                 {
@@ -598,14 +697,19 @@ public class Main {
                     if(selection >=1 && selection <= existingStudents.size())
                     {
                         modifyStudentDetails(existingStudents.get(selection-1));
+                        clear = true;
                     }
                     else if(selection == existingStudents.size()+1) break;
-                    else  System.out.println("Incorrect choice, please try again");
+                    else {
+                        System.out.println("Incorrect choice, please try again");
+                        clear = false;
+                    }
                 }
                 catch (Exception e)
                 {
                     System.out.println("Error: enter an actual number");
                     input.next();
+                    clear = false;
                 }
             }
         } else {
@@ -616,41 +720,63 @@ public class Main {
 
     public static void modifyStudentDetails(String studentUsername) {
         Student currentStudent = new Student(studentUsername);
+        boolean clear = true;
         while (true) {
-            System.out.println("Available details: ");
-            printList("Name: " + currentStudent.getName(), "Age: " + currentStudent.getAge(),
-                    "Phone number: " + currentStudent.getPhone(), "Main panel");
+            if (clear) {
+                clearConsole();
+                System.out.println("Update " + currentStudent.getName() + ": ");
+                System.out.println("Available details: ");
+                printList("Name: " + currentStudent.getName(), "Age: " + currentStudent.getAge(),
+                        "Phone number: " + currentStudent.getPhone(), "Main panel");
+            }
             System.out.print("Enter your selection: ");
             try {
                 int selection = input.nextInt();
                 switch (selection) {
                     case 1:
-                        System.out.print("Enter a new name: ");
-                        input.nextLine();
-                        String newName = input.nextLine();
+                        String newName;
+                        boolean error = false;
+                        do {
+                            System.out.print("Enter a new name: ");
+                            input.nextLine();
+                            newName = input.nextLine();
+                            if (newName.isEmpty()) {
+                                System.out.println("Error: empty name");
+                                error = true;
+                            } else error = false;
+                        } while (error);
                         currentStudent.setName(newName);
+                        clear = true;
                         break;
                     case 2:
                         System.out.print("Enter a new age: ");
                         input.nextLine();
                         String newAge = input.nextLine();
-                        currentStudent.setAge(newAge);
+                        if (isInteger(newAge)) {
+                            currentStudent.setAge(newAge);
+                        }
+                        clear = true;
                         break;
                     case 3:
                         System.out.print("Enter a new phone number: ");
                         input.nextLine();
                         String newPhone = input.nextLine();
-                        currentStudent.setPhone(newPhone);
+                        if (isInteger(newPhone)) {
+                            currentStudent.setPhone(newPhone);
+                        }
+                        clear = true;
                         break;
                     case 4:
                         return;
                     default:
                         System.out.println("Incorrect choice, please try again");
+                        clear = false;
                         break;
                 }
             } catch (Exception e) {
                 System.out.println("Error: enter an actual number");
                 input.next();
+                clear = false;
             }
         }
     }
@@ -658,6 +784,7 @@ public class Main {
     public static void deleteStudent() {
         ArrayList<String> studentList = Global.getUsernameList(Global.StudentLogin);
         clearConsole();
+        System.out.println("Delete an student: ");
         if (studentList.size() > 0) {
             System.out.println("Select student to delete: ");
             printList(studentList);
@@ -669,6 +796,7 @@ public class Main {
                     if (selection >= 1 && selection <= studentList.size()) {
                         admin.deleteStudent(studentList.get(selection - 1));
                         System.out.println("Student deleted successfully!");
+                        Pause();
                         return;
                     } else if (selection == studentList.size() + 1) {
                         return;
@@ -682,10 +810,12 @@ public class Main {
             }
         } else {
             System.out.println("No students to delete");
+            Pause();
         }
     }
 
     public static void listStudents() {
+        clearConsole();
         ArrayList<String> studentList = Global.getUsernameList(Global.StudentLogin);
         System.out.println("Students: " + studentList.size());
         for (String studentUsername : studentList) {
@@ -700,6 +830,8 @@ public class Main {
         ArrayList<String> availableInstructors = Global.getUsernameList(Global.InstructorLogin);
         ArrayList<String> existingStudents = Global.getUsernameList(Global.StudentLogin);
 
+        clearConsole();
+
         if (parentCourses.size() == 0 || availableInstructors.size() == 0 || existingStudents.size() == 0) {
             System.out.println("You cannot create a course due to a lack in " +
                     "parent courses, instructors or students");
@@ -713,7 +845,7 @@ public class Main {
         Date startDate = new Date(), endDate = new Date();
 
         //Step 1 - Set course ID, compare to existing courses
-        clearConsole();
+        System.out.println("Create a course");
         do {
             System.out.print("Enter course ID: ");
             ID = input.next();
@@ -855,30 +987,27 @@ public class Main {
         } while (error);
 
         //Step 11 - Select students
-        clearConsole();
         ArrayList<String> assignedStudents = new ArrayList<>();
 
         while (true) {
             if (existingStudents.size() > 0) {
+                clearConsole();
                 System.out.println("Select students: ");
                 printList(existingStudents);
+                System.out.println("Currently selected students: " + String.valueOf(assignedStudents));
                 System.out.print("Enter your selection (or type -1 to end selection): ");
                 try {
-                    if (existingStudents.size() > 0) { //If the existing student list is empty (all students are selected
-                        int selection = input.nextInt();
-                        if (selection >= 1 && selection <= existingStudents.size()) {
-                            //Add a student to the assigned list, remove from the existing list
-                            assignedStudents.add(existingStudents.get(selection - 1));
-                            existingStudents.remove(selection - 1);
-                        } else if (selection == -1) {
-                            if (assignedStudents.size() == 0) {
-                                System.out.println("Error: Cannot create course with zero students");
-                            } else break;
-                        } else {
-                            System.out.println("Error: Incorrect choice, please try again");
-                        }
+                    int selection = input.nextInt();
+                    if (selection >= 1 && selection <= existingStudents.size()) {
+                        //Add a student to the assigned list, remove from the existing list
+                        assignedStudents.add(existingStudents.get(selection - 1));
+                        existingStudents.remove(selection - 1);
+                    } else if (selection == -1) {
+                        if (assignedStudents.size() == 0) {
+                            System.out.println("Error: Cannot create course with zero students");
+                        } else break;
                     } else {
-                        break;
+                        System.out.println("Error: Incorrect choice, please try again");
                     }
                 } catch (Exception e) {
                     System.out.println("Error: enter an actual number");
@@ -899,8 +1028,9 @@ public class Main {
 
     public static void createReport() {
         clearConsole();
+        System.out.println("Create a report");
         System.out.println("Select report type: ");
-        printList("Courses near to start", "Courses near to end");
+        printList("Courses near to start", "Courses near to end", "Return to main panel");
         while (true) {
             System.out.print("Enter your selection: ");
             try {
@@ -914,6 +1044,8 @@ public class Main {
                         admin.createReport(false);
                         System.out.println("The report is saved in Reports/ending.txt");
                         break;
+                    case 3:
+                        return;
                     default:
                         System.out.println("Error: Incorrect choice, please try again");
                 }
@@ -922,6 +1054,7 @@ public class Main {
                 input.next(); //Disregarding the entered letter
             }
             Pause();
+            return;
         }
     }
 
