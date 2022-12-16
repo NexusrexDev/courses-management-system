@@ -8,6 +8,7 @@ public class Main {
     public static Student student;
     public static Instructor instructor;
     public static Scanner input;
+    public static Console console = System.console();
 
     public static void main(String[] args) {
         input = new Scanner(System.in);
@@ -58,8 +59,13 @@ public class Main {
         while (true) {
             System.out.print("Username: ");
             String username = input.next();
-            System.out.print("Password: ");
-            String password = input.next();
+            String password;
+            if(console == null)
+            {
+                System.out.print("Password: ");
+                password = input.next();
+            }
+            else password = readPassword();
             try {
                 switch (selection) {
                     case 1:
@@ -1088,7 +1094,7 @@ public class Main {
             clearConsole();
             System.out.println("Welcome, " + student.getName());
             printList("View grades", "View courses", "View all courses", "Create survey", "Update information", "Log out");
-            System.out.println("Enter your selection: ");
+            System.out.print("Enter your selection: ");
             try {
                 int selection = input.nextInt();
                 clearConsole();
@@ -1134,20 +1140,24 @@ public class Main {
                     System.out.println(student.getCourses().get(i) + " : " + student.getGrades().get(i));
                 else System.out.println(student.getCourses().get(i) + " : " + "unset grade");
             }
-        } else System.err.println(student.getName() + " do not register any course.");
+        } else System.out.println(student.getName() + " do not register any course.");
     }
 
-    public static void listCourses() {
-        System.out.println("Your courses ");
-        System.out.println("_____________________");
+    public static boolean listCourses() {
         if (!student.getCourses().isEmpty()) {
+            System.out.println("Your courses ");
+            System.out.println("_____________________");
             int index = 1;
             for (String course : student.getCourses()) {
                 System.out.println(index + "- " + course);
                 index++;
             }
-
+        } else
+        {
+            System.out.println(student.getName() + " do not register any course.");
+            return false;
         }
+        return true;
     }
 
     public static void listAllCourses() {
@@ -1163,27 +1173,29 @@ public class Main {
         boolean err = false;
         do {
             clearConsole();
-            listCourses();
-            System.out.println(student.getCourses().size() + 1 + "- Main panel");
-            System.out.println("Select course number : ");
-            try {
-                int selection = input.nextInt();
-                if (selection >= 1 && selection <= student.getCourses().size()) {
-                    System.out.println("Enter your comment : ");
-                    String comment = input.next();
-                    student.createSurvey(student.getCourses().get(selection - 1), comment);
-                    err = true;
+            if (listCourses())
+            {
+                System.out.println(student.getCourses().size() + 1 + "- Main panel");
+                System.out.print("Enter your selection : ");
+                try {
+                    int selection = input.nextInt();
+                    if (selection >= 1 && selection <= student.getCourses().size()) {
+                        System.out.println("Enter your comment : ");
+                        String comment = input.next();
+                        student.createSurvey(student.getCourses().get(selection - 1), comment);
+                        err = true;
 
-                } else if (selection == student.getCourses().size() + 1) {
-                    err = false;
-                } else {
-                    System.out.println("Incorrect choice, please try again");
+                    } else if (selection == student.getCourses().size() + 1) {
+                        err = false;
+                    } else {
+                        System.out.println("Incorrect choice, please try again");
+                        err = true;
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error: enter an actual number");
+                    input.next();
                     err = true;
                 }
-            } catch (Exception e) {
-                System.out.println("Error: enter an actual number");
-                input.next();
-                err = true;
             }
         } while (err);
 
@@ -1192,14 +1204,13 @@ public class Main {
     public static void updateStudent() {
         boolean err = true;
         String newInfo;
-
         do {
             clearConsole();
             System.out.println("Update panel");
             System.out.println("_____________________");
             printList("Name : " + student.getName(), "Age : " + student.getAge(), "Phone number : " + student.getPhone(),
                     "Main panel");
-            System.out.println("Enter your selection : ");
+            System.out.print("Enter your selection : ");
             try {
                 int selection = input.nextInt();
                 switch (selection) {
@@ -1213,13 +1224,15 @@ public class Main {
                         System.out.println("Enter a new age : ");
                         input.nextLine();
                         newInfo = input.nextLine();
-                        student.setAge(newInfo);
+                        if(isInteger(newInfo))
+                            student.setAge(newInfo);
                         break;
                     case 3:
                         System.out.println("Enter an new phone number : ");
                         input.nextLine();
                         newInfo = input.nextLine();
-                        student.setPhone(newInfo);
+                        if(isInteger(newInfo))
+                            student.setPhone(newInfo);
                         break;
                     case 4:
                         err = false;
@@ -1269,4 +1282,31 @@ public class Main {
         } catch (IOException | InterruptedException ignored) {}
     }
 
+    public static boolean isInteger(String input)
+    {
+        try
+        {
+            Integer.parseInt(input);
+            return true;
+        }
+        catch (Exception e)
+        {
+            System.out.println(input+ " is not a valid input.");
+            Pause();
+            return false;
+        }
+    }
+
+    public static String readPassword()
+    {
+         try
+         {
+             if(console != null)
+             {
+                 char[] pass = console.readPassword("Password: ");
+                 return new String(pass);
+             }
+         } catch (Exception e) {};
+        return "NAN";
+    }
 }
