@@ -628,6 +628,8 @@ public class Main {
         String username, password, name, phoneNumber;
         int age = 0;
         ArrayList<String> existingStudents = Global.getUsernameList(Global.StudentLogin);
+        clearConsole();
+        System.out.println("Add a student: ");
         //Get username
         do {
             System.out.print("Enter the student's username: ");
@@ -1027,6 +1029,7 @@ public class Main {
     }
 
     public static void createReport() {
+        String show;
         clearConsole();
         System.out.println("Create a report");
         System.out.println("Select report type: ");
@@ -1039,10 +1042,22 @@ public class Main {
                     case 1:
                         admin.createReport(true);
                         System.out.println("The report is saved in Reports/starting.txt");
+                        System.out.println("Press S if you wish to read it");
+                        input.nextLine();
+                        show = input.nextLine();
+                        if (show.equalsIgnoreCase("S")) {
+                            admin.viewReport(true);
+                        }
                         break;
                     case 2:
                         admin.createReport(false);
                         System.out.println("The report is saved in Reports/ending.txt");
+                        System.out.println("Press S if you wish to read it");
+                        input.nextLine();
+                        show = input.nextLine();
+                        if (show.equalsIgnoreCase("S")) {
+                            admin.viewReport(false);
+                        }
                         break;
                     case 3:
                         return;
