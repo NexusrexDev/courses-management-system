@@ -1215,20 +1215,20 @@ public class Main {
                 int selection = input.nextInt();
                 switch (selection) {
                     case 1:
-                        System.out.println("Enter a new name : ");
+                        System.out.print("Enter a new name : ");
                         input.nextLine();
                         newInfo = input.nextLine();
                         student.setName(newInfo);
                         break;
                     case 2:
-                        System.out.println("Enter a new age : ");
+                        System.out.print("Enter a new age : ");
                         input.nextLine();
                         newInfo = input.nextLine();
                         if(isInteger(newInfo))
                             student.setAge(newInfo);
                         break;
                     case 3:
-                        System.out.println("Enter an new phone number : ");
+                        System.out.print("Enter an new phone number : ");
                         input.nextLine();
                         newInfo = input.nextLine();
                         if(isInteger(newInfo))
