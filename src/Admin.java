@@ -104,4 +104,21 @@ public class Admin extends Person {
     public void createReport(boolean starting) {
         Reports report = new Reports(starting);
     }
+
+    public void viewReport(boolean starting) {
+        File file;
+        if (starting) {
+            file = new File(Global.ReportFolder + "starting.txt");
+        } else {
+            file = new File(Global.ReportFolder + "ending.txt");
+        }
+        try {
+            Scanner fileReader = new Scanner(file);
+            while (fileReader.hasNextLine()) {
+                System.out.println(fileReader.nextLine());
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
