@@ -1061,31 +1061,39 @@ public class Main {
     //Instructor methods
     public static void instructorPanel()
     {
+        boolean clear = true;
         while (true) {
-            clearConsole();
-            System.out.println("Welcome, " + instructor.getName());
-            printList("Publish grades", "View courses", "View survey", "Log out");
+            if (clear) {
+                clearConsole();
+                System.out.println("Welcome, " + instructor.getName());
+                printList("Publish grades", "View courses", "View survey", "Log out");
+            }
             System.out.print("Enter your selection: ");
             try {
                 int selection = input.nextInt();
                 switch (selection) {
                     case 1:
                         publishGrades();
+                        clear = true;
                         break;
                     case 2:
                         viewCourses();
+                        clear = true;
                         break;
                     case 3:
                         viewSurvey();
+                        clear = true;
                         break;
                     case 4:
                         return;
                     default:
                         System.out.println("Error: Incorrect choice, please try again");
+                        clear = false;
                 }
             } catch (Exception e) {
                 System.out.println("Error: enter an actual number");
                 input.next(); //Disregarding the entered letter
+                clear = false;
             }
         }
     }
@@ -1094,35 +1102,44 @@ public class Main {
     {
         ArrayList<String> courses = instructor.getCourseID();
         //list courses
-        if(instructor.getCourseID().isEmpty())
+        if(courses.isEmpty())
         {
+            clearConsole();
             System.out.println("You have zero courses");
             Pause();
         }
         else
         {
+            boolean clear = true;
             while (true)
             {
-                clearConsole();
-                System.out.println("Available courses: ");
-                printList(courses);
-                System.out.println(courses.size() + 1 + " - Main panel");
+                if (clear) {
+                    clearConsole();
+                    System.out.println("Available courses: ");
+                    printList(courses);
+                    System.out.println(courses.size() + 1 + " - Main panel");
+                }
                 System.out.print("Enter your selection: ");
 
                 try
                 {
                     int selection = input.nextInt();
-                    if(selection >=1 && selection <=instructor.getCourseID().size())
+                    if(selection >=1 && selection <=courses.size())
                     {
-                        setGrades(instructor.getCourseID().get(selection-1));
+                        setGrades(courses.get(selection-1));
+                        clear = true;
                     }
                     else if(selection ==instructor.getCourseID().size()+1) break;
-                    else  System.out.println("Incorrect choice, please try again");
+                    else {
+                        System.out.println("Incorrect choice, please try again");
+                        clear = false;
+                    }
                 }
                 catch (Exception e)
                 {
                     System.out.println("Error: enter an actual number");
                     input.next();
+                    clear = false;
                 }
 
             }
@@ -1132,13 +1149,14 @@ public class Main {
     public static void setGrades(String courseID)
     {
         Course course = new Course(courseID);
+        clearConsole();
+        System.out.println("Setting grades for " + courseID + ": ");
         for(String student : course.getStudentUsernames())
         {
             boolean errComp = false;
             while (!errComp)
             {
                 try {
-                    clearConsole();
                     System.out.print("Set grade for " + student + ": ");
                     int grade = input.nextInt();
                     if(grade >=0 && grade<= course.getGrade()) {
@@ -1158,7 +1176,7 @@ public class Main {
                 }
             }
         }
-        System.out.println("All grades are set!");
+        System.out.println("All grades are set and published!");
         Pause();
 
     }
@@ -1168,10 +1186,12 @@ public class Main {
         ArrayList<String> courseIDs = instructor.getCourseID();
         if(courseIDs.isEmpty())
         {
+            clearConsole();
             System.out.println("You have zero courses.");
         }
         else
         {
+            clearConsole();
             System.out.println("Courses number : "+courseIDs.size());
             for(String id : courseIDs)
             {
@@ -1187,33 +1207,42 @@ public class Main {
         ArrayList<String> courses = instructor.getCourseID();
         if(instructor.getCourseID().isEmpty())
         {
+            clearConsole();
             System.out.println("You have zero courses");
         }
         else
         {
+            boolean clear = true;
             while (true)
             {
-                clearConsole();
-                System.out.println("Available courses: ");
-                printList(courses);
-                System.out.println(courses.size() + 1 + " - Main panel");
+                if (clear) {
+                    clearConsole();
+                    System.out.println("Available courses: ");
+                    printList(courses);
+                    System.out.println(courses.size() + 1 + " - Main panel");
+                }
                 System.out.print("Enter your selection: ");
-
                 try
                 {
                     int selection = input.nextInt();
                     if(selection >=1 && selection <=instructor.getCourseID().size())
                     {
+                        clearConsole();
                         instructor.readSurvey(instructor.getCourseID().get(selection-1));
                         Pause();
+                        clear = true;
                     }
                     else if(selection ==instructor.getCourseID().size()+1) break;
-                    else  System.out.println("Incorrect choice, please try again");
+                    else {
+                        System.out.println("Incorrect choice, please try again");
+                        clear = false;
+                    }
                 }
                 catch (Exception e)
                 {
                     System.out.println("Error: enter an actual number");
                     input.next();
+                    clear = false;
                 }
 
             }
