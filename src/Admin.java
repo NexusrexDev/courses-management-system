@@ -106,19 +106,16 @@ public class Admin extends Person {
     }
 
     public void viewReport(boolean starting) {
-        File file;
+        FileHandler fileHandler;
         if (starting) {
-            file = new File(Global.ReportFolder + "starting.txt");
+            fileHandler = new FileHandler(Global.ReportFolder + "starting.txt");
         } else {
-            file = new File(Global.ReportFolder + "ending.txt");
+            fileHandler = new FileHandler(Global.ReportFolder + "ending.txt");
         }
-        try {
-            Scanner fileReader = new Scanner(file);
-            while (fileReader.hasNextLine()) {
-                System.out.println(fileReader.nextLine());
-            }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+
+        ArrayList<String> reportData = fileHandler.retrieve();
+        for (String line : reportData) {
+            System.out.println(line);
         }
     }
 }

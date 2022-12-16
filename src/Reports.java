@@ -1,4 +1,3 @@
-import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -6,15 +5,13 @@ import java.util.concurrent.TimeUnit;
 public class Reports {
     private ArrayList<String> courseDetails, courseIDs;
     private Scanner scanner;
-    private FileWriter fileWriter;
-    private File file;
+    private FileHandler fileHandler;
     private boolean starting;
 
 
     Reports(boolean starting) {
         Date today = new Date();
         courseDetails = new ArrayList<>();
-        this.starting = starting;
         //Step 1: Find all files in the Courses folder
         courseIDs = Global.getDirectoryList(Global.CourseFolder);
         //Step 2: loop on every course, creating a Course object
@@ -38,26 +35,33 @@ public class Reports {
         }
         //Write to file
         if (starting) {
-            file = new File(Global.ReportFolder + "starting.txt");
-        } else {
-            file = new File(Global.ReportFolder + "ending.txt");
+            fileHandler = new FileHandler(Global.ReportFolder + "starting.txt");
         }
-        try {
-            fileWriter = new FileWriter(file);
+        else {
+            fileHandler = new FileHandler(Global.ReportFolder + "ending.txt");
+        }
+
+        String report = "Report create on: " + new SimpleDateFormat("dd-MM-yyyy").format(today) + "\n";
+
+        for (String course: courseDetails)
+        {
+            report = report + course;
+        }
+
+        fileHandler.update(report);
+
+        /*try {
+            fileHandler = new FileWriter(file);
+            fileWriter.write("Report created on: " +
+                    new SimpleDateFormat("dd-MM-yyyy").format(today) + "\n");
             for (String course: courseDetails) {
-                fileWriter.write(course);
+                fileHandler.write(course);
             }
             fileWriter.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        }
+        }*/
 
-    }
 
-    public void printReport() {
-        for (String course: courseDetails) {
-            System.out.print(course);
-            System.out.println("-----------------------");
-        }
     }
 }

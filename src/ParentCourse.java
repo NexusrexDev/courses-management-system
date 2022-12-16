@@ -8,26 +8,19 @@ public class ParentCourse implements EventListener {
    private ArrayList<String> courses = new ArrayList<>();
    private FileWriter writer;
    private File file;
-
-
-
+   private FileHandler fileHandler;
    ParentCourse(String code, String name,ArrayList<String> courses)
    {
-       try {
-
-           writer = new FileWriter(Global.ParentCourseFolder + code +".txt");
-           writer.write(name +"\n");
-           for (String cours : courses) writer.write(cours + "\n");
-           writer.close();
-
-       } catch (IOException e) {
-           throw new RuntimeException(e);
-       }
-
+       fileHandler = new FileHandler(Global.ParentCourseFolder + code + ".txt");
+       this.code = code;
+       this.name = name;
+       this.courses = courses;
+       update();
    }
 
    ParentCourse(String code) {
         this.code = code;
+        fileHandler = new FileHandler(Global.ParentCourseFolder + code + ".txt");
         read();
    }
 
@@ -67,40 +60,29 @@ public class ParentCourse implements EventListener {
 
     @Override
     public void update() {
-        try {
-            writer = new FileWriter(Global.ParentCourseFolder + code +".txt");
-            writer.write(name +"\n");
-            for (String cours : courses) writer.write(cours + "\n");
-            writer.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+       String data = name + "\n";
+       for (String IDs : courses) {
+           data = data + IDs + "\n";
+       }
+       fileHandler.update(data);
     }
 
     @Override
     public void read() {
-        file = new File(Global.ParentCourseFolder + code +".txt");
-        try {
-            Scanner read = new Scanner(file);
-            this.name =read.nextLine();
-            String line ;
-
-            while (read.hasNextLine())
-            {
-                line = read.nextLine();
-                courses.add(line);
-            }
-            read.close();
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }}
+        //Retrieve all file data
+        ArrayList<String> parentCourseData = fileHandler.retrieve();
+        //Name is the first line
+        this.name = parentCourseData.get(0);
+        //All the remaining lines are course IDs
+        for (int i = 1; i < parentCourseData.size(); i++) {
+            if (!parentCourseData.get(i).isEmpty())
+                courses.add(parentCourseData.get(i));
+        }
+    }
 
     @Override
     public void delete() {
-        file = new File(Global.ParentCourseFolder + code +".txt");
-        file.delete();
+        fileHandler.delete();
     }
 
     public String toString()

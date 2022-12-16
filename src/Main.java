@@ -245,6 +245,7 @@ public class Main {
                 }
             }
         } else {
+            clearConsole();
             System.out.println("There are 0 parent courses");
             Pause();
         }
@@ -424,6 +425,7 @@ public class Main {
             } catch (Exception e) {
                 System.out.println("Error: enter an actual salary number");
                 input.next(); //Disregarding the entered letter
+                error = true;
             }
         } while (error);
         admin.addInstructor(username.toLowerCase(), password, name, phoneNumber, salary + "");
@@ -560,6 +562,7 @@ public class Main {
                     }
                 } catch (Exception e) {
                     System.out.println("Error: enter an actual number");
+                    //e.printStackTrace();
                     input.next(); //Disregarding the entered letter
                 }
             }
@@ -657,15 +660,24 @@ public class Main {
             }
         } while (error);
         //Get phonenumber
-        System.out.print("Enter the student's phone number: ");
-        phoneNumber = input.next();
+
+        do {
+            System.out.print("Enter the student's phone number: ");
+            phoneNumber = input.next();
+            if (!isInteger(phoneNumber)) {
+                error = true;
+                input.nextLine();
+            } else {
+                error = false;
+            }
+        }while (error);
         //Get age
         do {
             try {
                 System.out.print("Enter the student's age: ");
                 age = input.nextInt();
-                if (age < 0) {
-                    System.out.println("Error: the age couldn't be a negative number");
+                if (age <= 0) {
+                    System.out.println("Error: invalid age number");
                     error = true;
                 } else {
                     error = false;
@@ -673,6 +685,7 @@ public class Main {
             } catch (Exception e) {
                 System.out.println("Error: enter an actual age");
                 input.next(); //Disregarding the entered letter
+                error = true;
             }
         } while (error);
         admin.addStudent(username.toLowerCase(), password, name, phoneNumber, age + "");
@@ -862,11 +875,16 @@ public class Main {
 
         //Step 2 - Set course name
         clearConsole();
+        System.out.println("Create a course");
+        System.out.println("Course ID: " + ID);
         System.out.print("Enter course name: ");
         name = input.nextLine();
 
         //Step 3 - Select from parent courses
         clearConsole();
+        System.out.println("Create a course");
+        System.out.println("Course ID: " + ID);
+        System.out.println("Course name: " + name);
         System.out.println("Select parent course: ");
         printList(parentCourses);
         while (true) {
@@ -887,13 +905,17 @@ public class Main {
 
         //Step 4 - Select from instructors
         clearConsole();
+        System.out.println("Create a course");
+        System.out.println("Course ID: " + ID);
+        System.out.println("Course name: " + name);
+        System.out.println("Parent course: " + parentCourseCode);
         System.out.println("Select instructor: ");
         printList(availableInstructors);
         while (true) {
             System.out.print("Enter your selection: ");
             try {
                 int selection = input.nextInt();
-                if (selection >= 1 && selection <= parentCourses.size()) {
+                if (selection >= 1 && selection <= availableInstructors.size()) {
                     instructorUsername = availableInstructors.get(selection - 1);
                     break;
                 } else {
@@ -907,16 +929,34 @@ public class Main {
 
         //Step 5 - Set room
         clearConsole();
+        System.out.println("Create a course");
+        System.out.println("Course ID: " + ID);
+        System.out.println("Course name: " + name);
+        System.out.println("Parent course: " + parentCourseCode);
+        System.out.println("Instructor: " + instructorUsername);
         System.out.print("Enter room: ");
         room = input.next();
 
         //Step 6 - Set price
         clearConsole();
+        System.out.println("Create a course");
+        System.out.println("Course ID: " + ID);
+        System.out.println("Course name: " + name);
+        System.out.println("Parent course: " + parentCourseCode);
+        System.out.println("Instructor: " + instructorUsername);
+        System.out.println("Room: " + room);
         System.out.print("Enter price: ");
         price = input.next();
 
         //Step 7 - Set days
         clearConsole();
+        System.out.println("Create a course");
+        System.out.println("Course ID: " + ID);
+        System.out.println("Course name: " + name);
+        System.out.println("Parent course: " + parentCourseCode);
+        System.out.println("Instructor: " + instructorUsername);
+        System.out.println("Room: " + room);
+        System.out.println("Price: " + price);
         do {
             try {
                 System.out.print("Enter course days: ");
@@ -935,6 +975,14 @@ public class Main {
 
         //Step 8 - Set grades
         clearConsole();
+        System.out.println("Create a course");
+        System.out.println("Course ID: " + ID);
+        System.out.println("Course name: " + name);
+        System.out.println("Parent course: " + parentCourseCode);
+        System.out.println("Instructor: " + instructorUsername);
+        System.out.println("Room: " + room);
+        System.out.println("Price: " + price);
+        System.out.println("Days: " + days);
         do {
             try {
                 System.out.print("Enter maximum grade: ");
@@ -953,9 +1001,18 @@ public class Main {
 
         //Step 9 - Set start date
         clearConsole();
+        System.out.println("Create a course");
+        System.out.println("Course ID: " + ID);
+        System.out.println("Course name: " + name);
+        System.out.println("Parent course: " + parentCourseCode);
+        System.out.println("Instructor: " + instructorUsername);
+        System.out.println("Room: " + room);
+        System.out.println("Price: " + price);
+        System.out.println("Days: " + days);
+        System.out.println("Max. grade: " + grade);
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         do {
-            System.out.println("Enter starting date (in a dd-mm-yyyy format): ");
+            System.out.print("Enter starting date (in a dd-mm-yyyy format): ");
             String date = input.next();
             if (!date.matches("\\d{2}-\\d{2}-\\d{4}")) {
                 System.out.println("Error: the date should follow the format");
@@ -972,8 +1029,18 @@ public class Main {
 
         //Step 10 - Set end date
         clearConsole();
+        System.out.println("Create a course");
+        System.out.println("Course ID: " + ID);
+        System.out.println("Course name: " + name);
+        System.out.println("Parent course: " + parentCourseCode);
+        System.out.println("Instructor: " + instructorUsername);
+        System.out.println("Room: " + room);
+        System.out.println("Price: " + price);
+        System.out.println("Days: " + days);
+        System.out.println("Max. grade: " + grade);
+        System.out.println("Start date: " + format.format(startDate));
         do {
-            System.out.println("Enter ending date (in a dd-mm-yyyy format): ");
+            System.out.print("Enter ending date (in a dd-mm-yyyy format): ");
             String date = input.next();
             if (!date.matches("\\d{2}-\\d{2}-\\d{4}")) {
                 System.out.println("Error: the date should follow the format");
@@ -994,26 +1061,43 @@ public class Main {
         while (true) {
             if (existingStudents.size() > 0) {
                 clearConsole();
+                System.out.println("Create a course");
+                System.out.println("Course ID: " + ID);
+                System.out.println("Course name: " + name);
+                System.out.println("Parent course: " + parentCourseCode);
+                System.out.println("Instructor: " + instructorUsername);
+                System.out.println("Room: " + room);
+                System.out.println("Price: " + price);
+                System.out.println("Days: " + days);
+                System.out.println("Max. grade: " + grade);
+                System.out.println("Start date: " + format.format(startDate));
+                System.out.println("End date: " + format.format(endDate));
                 System.out.println("Select students: ");
                 printList(existingStudents);
+                System.out.println(existingStudents.size() + 1 + " - End selection");
                 System.out.println("Currently selected students: " + String.valueOf(assignedStudents));
-                System.out.print("Enter your selection (or type -1 to end selection): ");
+                System.out.print("Enter your selection: ");
                 try {
                     int selection = input.nextInt();
                     if (selection >= 1 && selection <= existingStudents.size()) {
                         //Add a student to the assigned list, remove from the existing list
                         assignedStudents.add(existingStudents.get(selection - 1));
                         existingStudents.remove(selection - 1);
-                    } else if (selection == -1) {
-                        if (assignedStudents.size() == 0) {
+                    } else if (selection == existingStudents.size() + 1) {
+                        if (assignedStudents.size() != 0) {
+                            break;
+                        } else {
                             System.out.println("Error: Cannot create course with zero students");
-                        } else break;
+                            Pause();
+                        }
                     } else {
                         System.out.println("Error: Incorrect choice, please try again");
+                        Pause();
                     }
                 } catch (Exception e) {
                     System.out.println("Error: enter an actual number");
                     input.next(); //Disregarding the entered letter
+                    Pause();
                 }
             } else {
                 System.out.println("All students are registered in this course");
@@ -1224,6 +1308,7 @@ public class Main {
         {
             clearConsole();
             System.out.println("You have zero courses");
+            Pause();
         }
         else
         {

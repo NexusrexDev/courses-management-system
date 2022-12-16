@@ -5,16 +5,17 @@ public class FileHandler {
     private String path;
     private File file;
     private FileWriter fileWriter;
-    private PrintWriter printWriter;
     private Scanner fileReader;
 
     FileHandler(String path) {
         this.path = path;
         file = new File(path);
-        try {
-            fileWriter = new FileWriter(file, true);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         try {
             fileReader = new Scanner(file);
@@ -45,6 +46,7 @@ public class FileHandler {
 
     public void append(String... text) {
         try {
+            fileWriter = new FileWriter(file, true);
             for (int i = 0; i < text.length; i++) {
                 fileWriter.append(text[i] + "\n");
             }
@@ -56,7 +58,8 @@ public class FileHandler {
 
     public boolean update(String updatedContent) {
         try {
-            fileWriter.write(updatedContent);
+            fileWriter = new FileWriter(file);
+            fileWriter.write(updatedContent + "\n");
             fileWriter.close();
             return true;
         } catch (Exception e) {

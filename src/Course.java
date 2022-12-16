@@ -7,11 +7,13 @@ public class Course implements EventListener {
     private Date startDate, endDate;
     private int days, grade;
     private ArrayList<String> studentUsernames;
-    private Scanner scanner;
-    private FileWriter fileWriter;
+    private FileHandler fileHandler;
+    private FileHandler surveyHandler;
 
     Course(String ID) {
         //This constructor READS from the file
+        fileHandler = new FileHandler(Global.CourseFolder + ID + ".txt");
+        surveyHandler = new FileHandler(Global.SurveyFolder + ID + ".txt");
         studentUsernames = new ArrayList<>();
         this.ID = ID;
         this.read();
@@ -30,14 +32,11 @@ public class Course implements EventListener {
         this.startDate = (Date) startDate.clone();
         this.endDate = (Date) endDate.clone();
         this.studentUsernames = (ArrayList<String>) studentUsernames.clone();
+        fileHandler = new FileHandler(Global.CourseFolder + ID + ".txt");
         update();
         //Creates a survey file
-        File surveyFile = new File(Global.SurveyFolder + ID + ".txt");
-        try {
-            surveyFile.createNewFile();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        surveyHandler = new FileHandler(Global.SurveyFolder + ID + ".txt");
+
     } 
 
     public ArrayList<String> getStudentUsernames() {
@@ -93,54 +92,39 @@ public class Course implements EventListener {
 
     @Override
     public void update() {
-        File file = new File( Global.CourseFolder + ID + ".txt");
-        try {
-            fileWriter = new FileWriter(file);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            String s = name + "\n" + parentCourseCode + "\n" + instructorUsername + "\n" + room + "\n" +
-                    price + "\n" + dateFormat.format(startDate) + "\n" + dateFormat.format(endDate) + "\n" + days + "\n" + grade;
-            for (String usernames : studentUsernames) {
-                s = s + "\n" + usernames;
-            }
-            fileWriter.write(s);
-            fileWriter.close();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String s = name + "\n" + parentCourseCode + "\n" + instructorUsername + "\n" + room + "\n" +
+                price + "\n" + dateFormat.format(startDate) + "\n" + dateFormat.format(endDate) + "\n" + days + "\n" + grade;
+        for (String usernames : studentUsernames) {
+            s = s + "\n" + usernames;
         }
+        fileHandler.update(s);
     }
 
     @Override
     public void read() {
-        File file = new File( Global.CourseFolder + ID + ".txt");
+        ArrayList<String> info = fileHandler.retrieve();
+        this.name = info.get(0);
+        this.parentCourseCode = info.get(1);
+        this.instructorUsername = info.get(2);
+        this.room = info.get(3);
+        this.price = info.get(4);
         try {
-            scanner = new Scanner(file);
-            name = scanner.nextLine();
-            parentCourseCode = scanner.nextLine();
-            instructorUsername = scanner.nextLine();
-            room = scanner.nextLine();
-            price = scanner.nextLine();
-            startDate = new SimpleDateFormat("dd-MM-yyyy").parse(scanner.nextLine());
-            endDate = new SimpleDateFormat("dd-MM-yyyy").parse(scanner.nextLine());
-            days = scanner.nextInt();
-            grade = scanner.nextInt();
-            while (scanner.hasNextLine()) {
-                studentUsernames.add(scanner.nextLine());
+            this.startDate = new SimpleDateFormat("dd-MM-yyyy").parse(info.get(5));
+            this.endDate = new SimpleDateFormat("dd-MM-yyyy").parse(info.get(6));
+        } catch (Exception e){}
+        this.days = Integer.parseInt(info.get(7));
+        this.grade = Integer.parseInt(info.get(8));
+        if (info.size() > 9) {
+            for (int i = 9; i < info.size(); i++) {
+                studentUsernames.add(info.get(i));
             }
-            if (studentUsernames.contains("")) {
-                //Cheap bugfix
-                studentUsernames.remove("");
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
-        scanner.close();
     }
 
     @Override
     public void delete() {
-        File courseFile = new File(Global.CourseFolder + ID + ".txt");
-        courseFile.delete();
-        File surveyFile = new File(Global.SurveyFolder + ID + ".txt");
-        surveyFile.delete();
+        fileHandler.delete();
+        surveyHandler.delete();
     }
 }

@@ -1,12 +1,12 @@
 import java.util.*;
-import java.io.*;
 
 
 public class Instructor extends Person implements EventListener{
 
     private String name, phoneNumber, salary;
-    private FileWriter fileWriter;
     private ArrayList<String> courseID = new ArrayList<>();
+    private FileHandler fileHandler;
+    private FileHandler loginHandler;
 
 
     // 3 constructors
@@ -16,11 +16,15 @@ public class Instructor extends Person implements EventListener{
     }
 
     public Instructor(String username) {
+        //This constructor READS the Instructor file
         this.username=username;
+        loginHandler = new FileHandler(Global.InstructorLogin);
+        fileHandler = new FileHandler(Global.InstructorFolder + username + ".txt");
         this.read();
     }
 
     public Instructor(String username, String password, String name, String phoneNumber, String salary, ArrayList<String> courseID){
+        //This constructor CREATES the instructor file
         this.username=username;
         this.password=password;
         this.name = name;
@@ -28,17 +32,12 @@ public class Instructor extends Person implements EventListener{
         this.salary=salary;
         this.courseID= (ArrayList<String>) courseID.clone();
         //Appending the username/password to the login file
-        File instructorsFile = new File(Global.InstructorLogin);
-        try {
-            fileWriter = new FileWriter(instructorsFile, true);
-            fileWriter.append(username + "\n");
-            fileWriter.append(password + "\n");
-            fileWriter.close();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        loginHandler = new FileHandler(Global.InstructorLogin);
+        loginHandler.append(username, password);
+        fileHandler = new FileHandler(Global.InstructorFolder + username + ".txt");
         this.update();
     }
+
     // override login -> call super for the path, if true load.
 
     public String getName() {
@@ -74,6 +73,8 @@ public class Instructor extends Person implements EventListener{
 
     public boolean login(String username, String password) throws Exception {
         if (super.login(username, password, Global.InstructorLogin )){
+            loginHandler = new FileHandler(Global.InstructorLogin);
+            fileHandler = new FileHandler(Global.InstructorFolder + username + ".txt");
             this.read();
             return true;
         }
@@ -111,15 +112,10 @@ public class Instructor extends Person implements EventListener{
     // read surveys of a course
     public void readSurvey(String course) {
         if (courseID.contains(course)) {
-            File file = new File(Global.SurveyFolder + course + ".txt");
-            try {
-                Scanner surveyReader = new Scanner(file);
-                System.out.println("Surveys for " + course + " course: ");
-                while (surveyReader.hasNextLine()) {
-                    System.out.println(surveyReader.nextLine());
-                }
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
+            FileHandler surveyHandler = new FileHandler(Global.SurveyFolder + course + ".txt");
+            System.out.println("Surveys for " + course + " course: ");
+            for (String survey : surveyHandler.retrieve()) {
+                System.out.println(survey);
             }
         }
     }
@@ -130,85 +126,55 @@ public class Instructor extends Person implements EventListener{
         String instructorPhoneNum = "Phone number: " + phoneNumber + "\n";
         String instructorSalary = "Salary: " + salary + "\n";
         String instructorCourses = "Number of taught courses: " + courseID.size() + "\n";
-        String instructorInfo = instructorHeader + instructorPhoneNum + instructorSalary + instructorCourses;
-        return instructorInfo;
+        return instructorHeader + instructorPhoneNum + instructorSalary + instructorCourses;
     }
 
     // update function
     @Override
     public void update() {
-        File instructorFile = new File(Global.InstructorFolder + username + ".txt");
-        try {
-            fileWriter = new FileWriter(instructorFile);
-            String i = name + "\n" + phoneNumber + "\n" + salary;
-            for (String courses: courseID){
-                i = i + "\n" + courses;
-            }
-            fileWriter.write(i + "\n");
-            fileWriter.close();
+        String i = name + "\n" + phoneNumber + "\n" + salary;
+        for (String courses: courseID){
+            i = i + "\n" + courses;
         }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+        fileHandler.update(i);
     }
 
     // delete instructor
     @Override
-    public void delete(){
+    public void delete()
+    {
         //remove username and password for said instructor
-        ArrayList<String> info = new ArrayList<String>();
-        File loginFile = new File(Global.InstructorLogin);
-        try {
-            Scanner scanner = new Scanner(loginFile);
-            while (scanner.hasNextLine()){
-                info.add(scanner.nextLine());
-            }
-            scanner.close();
+        ArrayList<String> loginData = loginHandler.retrieve();
+        if (loginData.contains(username)) {
+            loginData.remove(loginData.indexOf(username) + 1);
+            loginData.remove(username);
         }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-
-        if (info.contains(username)){
-            info.remove(info.indexOf(username)+1);
-            info.remove(username);
-        }
-
-        try {
-            fileWriter = new FileWriter(loginFile);
-            for (String i: info) {
-                fileWriter.write(i+"\n");
-            }
-            fileWriter.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        String data = loginData.toString().replaceAll(", ", "\n");
+        data = data.replaceFirst("\\[", "");
+        data = data.replaceFirst("]", "");
+        loginHandler.update(data);
 
         // remove the instructor file itself
-        File instructorFile = new File(Global.InstructorFolder + username + ".txt");
-        instructorFile.delete();
-
+        fileHandler.delete();
     }
 
     @Override
-    public void read(){
-        File instructorFile = new File(Global.InstructorFolder + username + ".txt");
-        try {
-            Scanner scanner = new Scanner(instructorFile);
-            name = scanner.nextLine();
-            phoneNumber = scanner.nextLine();
-            salary = scanner.nextLine();
-            while (scanner.hasNextLine())
-            {
-                courseID.add(scanner.nextLine());
-            }
-            if (courseID.contains("")){
-                courseID.remove("");
-            }
-            scanner.close();
+    public void read()
+    {
+        ArrayList<String> data = fileHandler.retrieve();
+        this.name = data.get(0);
+        this.phoneNumber = data.get(1);
+        this.salary = data.get(2);
+        if (data.contains(""))
+        {
+            data.remove("");
         }
-        catch (Exception e){
-            System.out.println(e.getMessage());
+        if (data.size() > 3) {
+            for (int i = 3; i < data.size(); i++) {
+                if (!data.get(i).isEmpty()) {
+                    courseID.add(data.get(i));
+                }
+            }
         }
     }
 }

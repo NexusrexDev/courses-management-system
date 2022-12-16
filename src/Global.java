@@ -15,15 +15,10 @@ public final class Global {
     public static ArrayList<String> getUsernameList(String path) {
         //This method fills a list w/ data from a specific path, used for instructor and student usernames
         ArrayList<String> list = new ArrayList<>();
-        File fileList = new File(path);
-        try {
-            Scanner listReader = new Scanner(fileList);
-            while (listReader.hasNextLine()) {
-                list.add(listReader.nextLine()); //Reading the usernames
-                listReader.nextLine(); //Skipping the password line
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        FileHandler fileHandler = new FileHandler(path);
+        ArrayList<String> fullSet = fileHandler.retrieve();
+        for (int i = 0; i < fullSet.size(); i += 2) {
+            list.add(fullSet.get(i));
         }
         return list;
     }

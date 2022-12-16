@@ -1,5 +1,4 @@
 import java.util.*;
-import java.io.*;
 
 public class Student extends Person implements EventListener {
 
@@ -10,8 +9,9 @@ public class Student extends Person implements EventListener {
     private ArrayList<String> courses = new ArrayList<>();
     private ArrayList<String> grades = new ArrayList<>();
 
+    private FileHandler fileHandler;
 
-    private FileHandler writer;
+    private FileHandler loginHandler;
 
     // default constructor
     Student()
@@ -22,17 +22,14 @@ public class Student extends Person implements EventListener {
     // constructor to make student
     Student(String userName ,String password ,String name , String phone,String age , ArrayList<String> courses)
     {
-        writer = new FileHandler(Global.StudentLogin);
-        writer.append(userName,password);
-        writer = new FileHandler(Global.StudentFolder+userName+".txt");
-        writer.update(name +"\n");
-        writer.update(phone +"\n");
-        writer.update(age +"\n");
+        loginHandler = new FileHandler(Global.StudentLogin);
+        loginHandler.append(userName,password);
+        fileHandler = new FileHandler(Global.StudentFolder+userName+".txt");
+        fileHandler.update(name);
+        fileHandler.append(phone, age);
         for(String course :courses)
         {
-            writer.update(course +"\n");
-            writer. update("\n");
-
+            fileHandler.append(course+"\n");
         }
     }
 
@@ -92,15 +89,12 @@ public class Student extends Person implements EventListener {
     // update changes of user data
     @Override
     public void update()  {
-        writer = new FileHandler(Global.StudentFolder+this.username+".txt");
-        writer.update(name +"\n");
-        writer.update(phone +"\n");
-        writer.update(age +"\n");
+        fileHandler = new FileHandler(Global.StudentFolder+this.username+".txt");
+        fileHandler.update(name);
+        fileHandler.append(phone,age);
         for(int i =0 ;i<courses.size();i++)
         {
-            writer.update(courses.get(i) +"\n");
-            writer.update(grades.get(i)+"\n");
-
+            fileHandler.append(courses.get(i),grades.get(i));
         }
 
     }
@@ -109,9 +103,9 @@ public class Student extends Person implements EventListener {
     @Override
     public void read() {
 
-        writer = new FileHandler(Global.StudentFolder+this.username +".txt");
+        fileHandler = new FileHandler(Global.StudentFolder+this.username +".txt");
         ArrayList<String> content = new ArrayList<>();
-        content = writer.retrieve();
+        content = fileHandler.retrieve();
         name = content.get(0);
         phone = content.get(1);
         age = content.get(2);
@@ -129,9 +123,9 @@ public class Student extends Person implements EventListener {
     @Override
     public void delete() {
 
-        writer = new FileHandler(Global.StudentLogin);
+        loginHandler = new FileHandler(Global.StudentLogin);
         ArrayList<String> lines = new ArrayList<>();
-        lines = writer.retrieve();
+        lines = loginHandler.retrieve();
 
 
         if(lines.contains(username))
@@ -140,13 +134,14 @@ public class Student extends Person implements EventListener {
             lines.remove(username);
         }
 
-        for (String line : lines)
-        {
-            writer.update(line+"\n");
-        }
+        String file = lines.toString();
+        file = file.replaceFirst("\\[","");
+        file = file.replaceFirst("]","");
+        file = file.replaceAll(", ","\n");
+        loginHandler.update(file);
 
-        writer = new FileHandler(Global.StudentFolder+this.username+".txt");
-        file.delete();
+        fileHandler = new FileHandler(Global.StudentFolder+this.username+".txt");
+        fileHandler.delete();
 
 
     }
@@ -183,8 +178,8 @@ public class Student extends Person implements EventListener {
     public void createSurvey(String courseID, String comment)
     {
         if (courses.contains(courseID)) {
-            writer = new FileHandler(Global.SurveyFolder + courseID + ".txt");
-            writer.append(username+" : "+comment);
+            fileHandler = new FileHandler(Global.SurveyFolder + courseID + ".txt");
+            fileHandler.append(username+" : "+comment);
         }
     }
 
