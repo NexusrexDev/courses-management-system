@@ -1302,7 +1302,7 @@ public class Main {
                     System.out.println(student.getCourses().get(i) + " : " + student.getGrades().get(i));
                 else System.out.println(student.getCourses().get(i) + " : " + "unset grade");
             }
-        } else System.out.println(student.getName() + " do not register any course.");
+        } else System.out.println(student.getName() + " didn't register any course.");
     }
 
     public static boolean listCourses() {
@@ -1316,7 +1316,7 @@ public class Main {
             }
         } else
         {
-            System.out.println(student.getName() + " do not register any course.");
+            System.out.println(student.getName() + " didn't register any course.");
             return false;
         }
         return true;
@@ -1332,8 +1332,13 @@ public class Main {
     }
 
     public static void createSurvey() {
-        boolean err = false;
-        do {
+        if (student.getCourses().size() == 0) {
+            clearConsole();
+            System.out.println(student.getName() + " didn't register any course.");
+            Pause();
+            return;
+        }
+        while (true) {
             clearConsole();
             if (listCourses())
             {
@@ -1342,24 +1347,34 @@ public class Main {
                 try {
                     int selection = input.nextInt();
                     if (selection >= 1 && selection <= student.getCourses().size()) {
-                        System.out.println("Enter your comment : ");
-                        String comment = input.next();
+                        boolean err = false;
+                        String comment;
+                        do {
+                            input.nextLine();
+                            System.out.println("Enter your comment : ");
+                            comment = input.nextLine();
+                            if (comment.isEmpty()) {
+                                System.out.println("Error: empty comment");
+                                err = true;
+                            } else {
+                                err = false;
+                            }
+                        } while (err);
                         student.createSurvey(student.getCourses().get(selection - 1), comment);
-                        err = true;
+                        System.out.println("Survey set successfully!");
+                        Pause();
 
                     } else if (selection == student.getCourses().size() + 1) {
-                        err = false;
+                        return;
                     } else {
                         System.out.println("Incorrect choice, please try again");
-                        err = true;
                     }
                 } catch (Exception e) {
                     System.out.println("Error: enter an actual number");
                     input.next();
-                    err = true;
                 }
             }
-        } while (err);
+        }
 
     }
 
@@ -1380,7 +1395,11 @@ public class Main {
                         System.out.print("Enter a new name : ");
                         input.nextLine();
                         newInfo = input.nextLine();
-                        student.setName(newInfo);
+                        if (!newInfo.isEmpty()) {
+                            student.setName(newInfo);
+                        } else {
+                            System.out.println("Error: empty name");
+                        }
                         break;
                     case 2:
                         System.out.print("Enter a new age : ");
