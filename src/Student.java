@@ -9,8 +9,9 @@ public class Student extends Person implements EventListener {
 
     private ArrayList<String> courses = new ArrayList<>();
     private ArrayList<String> grades = new ArrayList<>();
-    private FileWriter writer;
-    private File file;
+
+
+    private FileHandler writer;
 
     // default constructor
     Student()
@@ -21,30 +22,17 @@ public class Student extends Person implements EventListener {
     // constructor to make student
     Student(String userName ,String password ,String name , String phone,String age , ArrayList<String> courses)
     {
-        try {
-            writer = new FileWriter(Global.StudentLogin, true);
-            writer.append(userName).append("\n");
-            writer.append(password).append("\n");
-            writer.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        writer = new FileHandler(Global.StudentLogin);
+        writer.append(userName,password);
+        writer = new FileHandler(Global.StudentFolder+userName+".txt");
+        writer.update(name +"\n");
+        writer.update(phone +"\n");
+        writer.update(age +"\n");
+        for(String course :courses)
+        {
+            writer.update(course +"\n");
+            writer. update("\n");
 
-        try {
-            writer = new FileWriter(Global.StudentFolder+userName+".txt");
-            //writer.write(userName +"\n");
-            writer.write(name +"\n");
-            writer.write(phone +"\n");
-            writer.write(age +"\n");
-            for(String course :courses)
-            {
-                writer.write(course +"\n");
-                writer.write("\n");
-
-            }
-            writer.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -104,20 +92,15 @@ public class Student extends Person implements EventListener {
     // update changes of user data
     @Override
     public void update()  {
-        try {
-            writer = new FileWriter(Global.StudentFolder+this.username+".txt");
-            writer.write(name +"\n");
-            writer.write(phone +"\n");
-            writer.write(age +"\n");
-            for(int i =0 ;i<courses.size();i++)
-            {
-                writer.write(courses.get(i) +"\n");
-                writer.write(grades.get(i)+"\n");
+        writer = new FileHandler(Global.StudentFolder+this.username+".txt");
+        writer.update(name +"\n");
+        writer.update(phone +"\n");
+        writer.update(age +"\n");
+        for(int i =0 ;i<courses.size();i++)
+        {
+            writer.update(courses.get(i) +"\n");
+            writer.update(grades.get(i)+"\n");
 
-            }
-            writer.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
 
     }
@@ -126,26 +109,19 @@ public class Student extends Person implements EventListener {
     @Override
     public void read() {
 
-        file = new File(Global.StudentFolder+this.username +".txt");
-        try {
-            Scanner read = new Scanner(file);
+        writer = new FileHandler(Global.StudentFolder+this.username +".txt");
+        ArrayList<String> content = new ArrayList<>();
+        content = writer.retrieve();
+        name = content.get(0);
+        phone = content.get(1);
+        age = content.get(2);
+        for(int i =3 ; i<content.size()-1;i+=2)
+        {
 
-
-            name = read.nextLine();
-            phone = read.nextLine();
-            age = read.nextLine();
-            while (read.hasNextLine())
-            {
-
-                courses.add(read.nextLine());
-                grades.add(read.nextLine());
-            }
-
-
-            read.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            courses.add(content.get(i));
+            grades.add(content.get(i+1));
         }
+
 
     }
 
@@ -153,17 +129,9 @@ public class Student extends Person implements EventListener {
     @Override
     public void delete() {
 
-        file = new File(Global.StudentLogin);
+        writer = new FileHandler(Global.StudentLogin);
         ArrayList<String> lines = new ArrayList<>();
-        try {
-            Scanner read = new Scanner(file);
-            while (read.hasNextLine())
-                lines.add(read.nextLine());
-            read.close();
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        lines = writer.retrieve();
 
 
         if(lines.contains(username))
@@ -172,18 +140,12 @@ public class Student extends Person implements EventListener {
             lines.remove(username);
         }
 
-
-        try {
-            writer =new FileWriter(Global.StudentLogin);
-
-            for(String line : lines)
-                writer.write(line+"\n");
-            writer.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        for (String line : lines)
+        {
+            writer.update(line+"\n");
         }
 
-        file = new File(Global.StudentFolder+this.username+".txt");
+        writer = new FileHandler(Global.StudentFolder+this.username+".txt");
         file.delete();
 
 
@@ -221,14 +183,8 @@ public class Student extends Person implements EventListener {
     public void createSurvey(String courseID, String comment)
     {
         if (courses.contains(courseID)) {
-            file = new File(Global.SurveyFolder + courseID + ".txt");
-            try {
-                writer = new FileWriter(file, true);
-                writer.append(username).append(" : ").append(comment).append("\n");
-                writer.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            writer = new FileHandler(Global.SurveyFolder + courseID + ".txt");
+            writer.append(username+" : "+comment);
         }
     }
 

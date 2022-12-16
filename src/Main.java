@@ -1366,7 +1366,7 @@ public class Main {
                         String comment;
                         do {
                             input.nextLine();
-                            System.out.println("Enter your comment : ");
+                            System.out.print("Enter your comment : ");
                             comment = input.nextLine();
                             if (comment.isEmpty()) {
                                 System.out.println("Error: empty comment");
