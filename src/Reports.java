@@ -47,7 +47,7 @@ public class Reports {
         {
             report = report + course;
         }
-
+        fileHandler.create();
         fileHandler.update(report);
 
         /*try {

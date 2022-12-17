@@ -9,22 +9,21 @@ public class FileHandler {
 
     FileHandler(String path) {
         this.path = path;
+    }
+
+    public void create() {
         file = new File(path);
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
         try {
-            fileReader = new Scanner(file);
-        } catch (FileNotFoundException e) {
+            file.createNewFile();
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public boolean search(String text) {
+        try {
+            fileReader = new Scanner(file);
+        } catch (Exception e) {}
         while (fileReader.hasNextLine()) {
             String currentLine = fileReader.nextLine();
             if (currentLine.equalsIgnoreCase(text)) {
@@ -36,39 +35,61 @@ public class FileHandler {
     }
 
     public ArrayList<String> retrieve() {
+        try {
+            fileReader = new Scanner(file);
+        } catch (Exception e) {}
         ArrayList<String> data = new ArrayList<>();
-        while (fileReader.hasNextLine()) {
-            data.add(fileReader.nextLine());
+        try {
+            while (fileReader.hasNextLine()) {
+                data.add(fileReader.nextLine());
+            }
+        } catch (Exception e) {
+            fileReader.close();
+            System.out.println("Exception");
         }
-        fileReader.close();
+        finally {
+            fileReader.close();
+        }
         return data;
     }
 
     public void append(String... text) {
         try {
-            fileWriter = new FileWriter(file, true);
+            fileWriter = new FileWriter(path, true);
             for (int i = 0; i < text.length; i++) {
                 fileWriter.append(text[i] + "\n");
             }
-            fileWriter.close();
         } catch (IOException e) {
-            throw new RuntimeException();
+            System.out.println("Cannot append to file");
         }
+        try {
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (Exception ex) {};
+        fileWriter = null;
     }
 
     public boolean update(String updatedContent) {
         try {
-            fileWriter = new FileWriter(file);
+            fileWriter = new FileWriter(path);
             fileWriter.write(updatedContent + "\n");
-            fileWriter.close();
-            return true;
         } catch (Exception e) {
             System.out.println("Error: cannot update file");
-            return false;
         }
+        try {
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (Exception ex) {};
+        fileWriter = null;
+        return true;
     }
 
     public boolean delete() {
-        return file.delete();
+        try {
+            file.delete();
+        } catch (Exception e) {
+            System.out.println("File is not deleted, surprisingly");
+        }
+        return true;
     }
 }

@@ -8,6 +8,7 @@ public class Person {
     public boolean login(String Username, String Password,String path) throws NonexistentUserException {
         //Initializing the fileHandler
         fileHandler = new FileHandler(path);
+        fileHandler.create();
         //Storing all data to compare
         ArrayList<String> data = fileHandler.retrieve();
         for (int i = 0; i < data.size(); i += 2) { //Reading usernames only (0, 2, 4..etc)

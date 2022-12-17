@@ -19,7 +19,9 @@ public class Instructor extends Person implements EventListener{
         //This constructor READS the Instructor file
         this.username=username;
         loginHandler = new FileHandler(Global.InstructorLogin);
+        loginHandler.create();
         fileHandler = new FileHandler(Global.InstructorFolder + username + ".txt");
+        fileHandler.create();
         this.read();
     }
 
@@ -33,8 +35,10 @@ public class Instructor extends Person implements EventListener{
         this.courseID= (ArrayList<String>) courseID.clone();
         //Appending the username/password to the login file
         loginHandler = new FileHandler(Global.InstructorLogin);
+        loginHandler.create();
         loginHandler.append(username, password);
         fileHandler = new FileHandler(Global.InstructorFolder + username + ".txt");
+        fileHandler.create();
         this.update();
     }
 
@@ -74,7 +78,9 @@ public class Instructor extends Person implements EventListener{
     public boolean login(String username, String password) throws Exception {
         if (super.login(username, password, Global.InstructorLogin )){
             loginHandler = new FileHandler(Global.InstructorLogin);
+            loginHandler.create();
             fileHandler = new FileHandler(Global.InstructorFolder + username + ".txt");
+            fileHandler.create();
             this.read();
             return true;
         }
@@ -113,6 +119,7 @@ public class Instructor extends Person implements EventListener{
     public void readSurvey(String course) {
         if (courseID.contains(course)) {
             FileHandler surveyHandler = new FileHandler(Global.SurveyFolder + course + ".txt");
+            surveyHandler.create();
             System.out.println("Surveys for " + course + " course: ");
             for (String survey : surveyHandler.retrieve()) {
                 System.out.println(survey);

@@ -112,7 +112,7 @@ public class Admin extends Person {
         } else {
             fileHandler = new FileHandler(Global.ReportFolder + "ending.txt");
         }
-
+        fileHandler.create();
         ArrayList<String> reportData = fileHandler.retrieve();
         for (String line : reportData) {
             System.out.println(line);

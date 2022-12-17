@@ -13,7 +13,9 @@ public class Course implements EventListener {
     Course(String ID) {
         //This constructor READS from the file
         fileHandler = new FileHandler(Global.CourseFolder + ID + ".txt");
+        fileHandler.create();
         surveyHandler = new FileHandler(Global.SurveyFolder + ID + ".txt");
+        surveyHandler.create();
         studentUsernames = new ArrayList<>();
         this.ID = ID;
         this.read();
@@ -33,10 +35,11 @@ public class Course implements EventListener {
         this.endDate = (Date) endDate.clone();
         this.studentUsernames = (ArrayList<String>) studentUsernames.clone();
         fileHandler = new FileHandler(Global.CourseFolder + ID + ".txt");
+        fileHandler.create();
         update();
         //Creates a survey file
         surveyHandler = new FileHandler(Global.SurveyFolder + ID + ".txt");
-
+        surveyHandler.create();
     } 
 
     public ArrayList<String> getStudentUsernames() {

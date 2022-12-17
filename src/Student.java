@@ -23,10 +23,11 @@ public class Student extends Person implements EventListener {
     Student(String userName ,String password ,String name , String phone,String age , ArrayList<String> courses)
     {
         loginHandler = new FileHandler(Global.StudentLogin);
+        loginHandler.create();
         loginHandler.append(userName,password);
         fileHandler = new FileHandler(Global.StudentFolder+userName+".txt");
-        fileHandler.update(name);
-        fileHandler.append(phone, age);
+        fileHandler.create();
+        fileHandler.append(name,phone, age);
         for(String course :courses)
         {
             fileHandler.append(course+"\n");
@@ -36,6 +37,10 @@ public class Student extends Person implements EventListener {
     // constructor to read student data
     Student(String userName)  {
         this.username = userName;
+        loginHandler = new FileHandler(Global.StudentLogin);
+        fileHandler = new FileHandler(Global.StudentFolder+userName+".txt");
+        loginHandler.create();
+        fileHandler.create();
         read();
     }
     // return phone number
@@ -89,7 +94,7 @@ public class Student extends Person implements EventListener {
     // update changes of user data
     @Override
     public void update()  {
-        fileHandler = new FileHandler(Global.StudentFolder+this.username+".txt");
+        //fileHandler = new FileHandler(Global.StudentFolder+this.username+".txt");
         fileHandler.update(name);
         fileHandler.append(phone,age);
         for(int i =0 ;i<courses.size();i++)
@@ -103,7 +108,7 @@ public class Student extends Person implements EventListener {
     @Override
     public void read() {
 
-        fileHandler = new FileHandler(Global.StudentFolder+this.username +".txt");
+        //fileHandler = new FileHandler(Global.StudentFolder+this.username +".txt");
         ArrayList<String> content = new ArrayList<>();
         content = fileHandler.retrieve();
         name = content.get(0);
@@ -123,7 +128,7 @@ public class Student extends Person implements EventListener {
     @Override
     public void delete() {
 
-        loginHandler = new FileHandler(Global.StudentLogin);
+        //loginHandler = new FileHandler(Global.StudentLogin);
         ArrayList<String> lines = new ArrayList<>();
         lines = loginHandler.retrieve();
 
@@ -140,7 +145,7 @@ public class Student extends Person implements EventListener {
         file = file.replaceAll(", ","\n");
         loginHandler.update(file);
 
-        fileHandler = new FileHandler(Global.StudentFolder+this.username+".txt");
+       // fileHandler = new FileHandler(Global.StudentFolder+this.username+".txt");
         fileHandler.delete();
 
 
@@ -189,6 +194,10 @@ public class Student extends Person implements EventListener {
 
         if(super.login(Username,Password,Global.StudentLogin))
         {
+            loginHandler = new FileHandler(Global.StudentLogin);
+            loginHandler.create();
+            fileHandler = new FileHandler(Global.StudentFolder+Username+".txt");
+            fileHandler.create();
             read();
             return true;
         }

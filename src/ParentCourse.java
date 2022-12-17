@@ -11,16 +11,21 @@ public class ParentCourse implements EventListener {
    private FileHandler fileHandler;
    ParentCourse(String code, String name,ArrayList<String> courses)
    {
-       fileHandler = new FileHandler(Global.ParentCourseFolder + code + ".txt");
        this.code = code;
        this.name = name;
        this.courses = courses;
-       update();
+       fileHandler = new FileHandler(Global.ParentCourseFolder + code + ".txt");
+       fileHandler.create();
+       fileHandler.update(name);
+       for (String ID : courses) {
+           fileHandler.append(ID);
+       }
    }
 
    ParentCourse(String code) {
         this.code = code;
         fileHandler = new FileHandler(Global.ParentCourseFolder + code + ".txt");
+        fileHandler.create();
         read();
    }
 

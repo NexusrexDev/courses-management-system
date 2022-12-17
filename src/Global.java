@@ -16,6 +16,7 @@ public final class Global {
         //This method fills a list w/ data from a specific path, used for instructor and student usernames
         ArrayList<String> list = new ArrayList<>();
         FileHandler fileHandler = new FileHandler(path);
+        fileHandler.create();
         ArrayList<String> fullSet = fileHandler.retrieve();
         for (int i = 0; i < fullSet.size(); i += 2) {
             list.add(fullSet.get(i));
