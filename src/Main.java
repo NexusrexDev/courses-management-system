@@ -269,7 +269,12 @@ public class Main {
                         System.out.print("Enter a new name: ");
                         input.nextLine();
                         String newName = input.nextLine();
-                        parentCourse.setName(newName);
+                        if (!newName.isEmpty()) {
+                            parentCourse.setName(newName);
+                        } else {
+                            System.out.println("Error: New name cannot be empty");
+                            Pause();
+                        }
                         clear = true;
                         break;
                     case 2:
@@ -491,18 +496,13 @@ public class Main {
                 int selection = input.nextInt();
                 switch (selection) {
                     case 1:
-                        String newName;
-                        boolean error = false;
-                        do {
-                            System.out.print("Enter a new name: ");
-                            input.nextLine();
-                            newName = input.nextLine();
-                            if (newName.isEmpty()) {
-                                System.out.println("Error: empty name");
-                                error = true;
-                            } else error = false;
-                        } while (error);
-                        currentInstructor.setName(newName);
+                        System.out.print("Enter a new name: ");
+                        input.nextLine();
+                        String newName = input.nextLine();
+                        if (newName.isEmpty()) {
+                            System.out.println("Error: empty name");
+                            Pause();
+                        } else currentInstructor.setName(newName);
                         clear = true;
                         break;
                     case 2:
@@ -749,18 +749,13 @@ public class Main {
                 int selection = input.nextInt();
                 switch (selection) {
                     case 1:
-                        String newName;
-                        boolean error = false;
-                        do {
-                            System.out.print("Enter a new name: ");
-                            input.nextLine();
-                            newName = input.nextLine();
-                            if (newName.isEmpty()) {
-                                System.out.println("Error: empty name");
-                                error = true;
-                            } else error = false;
-                        } while (error);
-                        currentStudent.setName(newName);
+                        System.out.print("Enter a new name: ");
+                        input.nextLine();
+                        String newName = input.nextLine();
+                        if (newName.isEmpty()) {
+                            System.out.println("Error: empty name");
+                            Pause();
+                        } else currentStudent.setName(newName);
                         clear = true;
                         break;
                     case 2:
@@ -865,7 +860,7 @@ public class Main {
             System.out.print("Enter course ID: ");
             ID = input.next();
             if (existingCourses.contains(ID.toUpperCase())) {
-                System.out.println("Error: This student already exists.");
+                System.out.println("Error: This course already exists.");
                 error = true;
             } else {
                 error = false;
@@ -877,8 +872,16 @@ public class Main {
         clearConsole();
         System.out.println("Create a course");
         System.out.println("Course ID: " + ID);
-        System.out.print("Enter course name: ");
-        name = input.nextLine();
+        do {
+            System.out.print("Enter course name: ");
+            name = input.nextLine();
+            if (name.isEmpty()) {
+                System.out.println("Error: Empty course name");
+                error = true;
+            } else {
+                error = false;
+            }
+        } while (error);
 
         //Step 3 - Select from parent courses
         clearConsole();
@@ -970,6 +973,7 @@ public class Main {
             } catch (Exception e) {
                 System.out.println("Error: enter an actual number");
                 input.next(); //Disregarding the entered letter
+                error = true;
             }
         } while (error);
 
@@ -1039,21 +1043,10 @@ public class Main {
         System.out.println("Days: " + days);
         System.out.println("Max. grade: " + grade);
         System.out.println("Start date: " + format.format(startDate));
-        do {
-            System.out.print("Enter ending date (in a dd-mm-yyyy format): ");
-            String date = input.next();
-            if (!date.matches("\\d{2}-\\d{2}-\\d{4}")) {
-                System.out.println("Error: the date should follow the format");
-                error = true;
-            } else {
-                error = false;
-                try {
-                    endDate = format.parse(date);
-                } catch (ParseException e) {
-                    System.out.println(e.getMessage());
-                }
-            }
-        } while (error);
+        //1- Get start date + days
+        long dateSum = startDate.getTime() + (days * 24 * 60 * 60 * 1000);
+        //2- Convert summation to days
+        endDate = new Date(dateSum);
 
         //Step 11 - Select students
         ArrayList<String> assignedStudents = new ArrayList<>();
@@ -1114,11 +1107,14 @@ public class Main {
 
     public static void createReport() {
         String show;
-        clearConsole();
-        System.out.println("Create a report");
-        System.out.println("Select report type: ");
-        printList("Courses near to start", "Courses near to end", "Return to main panel");
+        boolean clear = true;
         while (true) {
+            if (clear) {
+                clearConsole();
+                System.out.println("Create a report");
+                System.out.println("Select report type: ");
+                printList("Courses near to start", "Courses near to end", "Return to main panel");
+            }
             System.out.print("Enter your selection: ");
             try {
                 int selection = input.nextInt();
@@ -1132,7 +1128,8 @@ public class Main {
                         if (show.equalsIgnoreCase("S")) {
                             admin.viewReport(true);
                         }
-                        break;
+                        Pause();
+                        return;
                     case 2:
                         admin.createReport(false);
                         System.out.println("The report is saved in Reports/ending.txt");
@@ -1142,18 +1139,19 @@ public class Main {
                         if (show.equalsIgnoreCase("S")) {
                             admin.viewReport(false);
                         }
-                        break;
+                        Pause();
+                        return;
                     case 3:
                         return;
                     default:
                         System.out.println("Error: Incorrect choice, please try again");
+                        clear = false;
                 }
             } catch (Exception e) {
                 System.out.println("Error: enter an actual number");
                 input.next(); //Disregarding the entered letter
+                clear = false;
             }
-            Pause();
-            return;
         }
     }
 
@@ -1352,10 +1350,13 @@ public class Main {
 
     //Start of student panel methods
     public static void studentPanel() {
+        boolean clear = true;
         while (true) {
-            clearConsole();
-            System.out.println("Welcome, " + student.getName());
-            printList("View grades", "View courses", "View all courses", "Create survey", "Update information", "Log out");
+            if (clear) {
+                clearConsole();
+                System.out.println("Welcome, " + student.getName());
+                printList("View grades", "View courses", "View all courses", "Create survey", "Update information", "Log out");
+            }
             System.out.print("Enter your selection: ");
             try {
                 int selection = input.nextInt();
@@ -1364,30 +1365,37 @@ public class Main {
                     case 1:
                         showGrades();
                         Pause();
+                        clear = true;
                         break;
                     case 2:
                         listCourses();
                         Pause();
+                        clear = true;
                         break;
                     case 3:
                         listAllCourses();
                         Pause();
+                        clear = true;
                         break;
                     case 4:
                         createSurvey();
+                        clear = true;
                         break;
                     case 5:
                         updateStudent();
+                        clear = true;
                         break;
                     case 6:
                         return;
                     default:
                         System.out.println("Incorrect choice, please try again");
+                        clear = false;
                         break;
                 }
             } catch (Exception e) {
                 System.out.println("Error: enter an actual number");
                 input.next();
+                clear = false;
             }
         }
     }
@@ -1395,12 +1403,12 @@ public class Main {
     public static void showGrades() {
         if (!student.getCourses().isEmpty()) {
             System.out.println("Your grades ");
-            System.out.println("_____________________");
+            System.out.println("--------------------");
 
             for (int i = 0; i < student.getGrades().size(); i++) {
                 if (!student.getGrades().get(i).equals(""))
-                    System.out.println(student.getCourses().get(i) + " : " + student.getGrades().get(i));
-                else System.out.println(student.getCourses().get(i) + " : " + "unset grade");
+                    System.out.println(student.getCourses().get(i) + ": " + student.getGrades().get(i));
+                else System.out.println(student.getCourses().get(i) + ": " + "unset grade");
             }
         } else System.out.println(student.getName() + " didn't register any course.");
     }
@@ -1408,7 +1416,7 @@ public class Main {
     public static boolean listCourses() {
         if (!student.getCourses().isEmpty()) {
             System.out.println("Your courses ");
-            System.out.println("_____________________");
+            System.out.println("--------------------");
             int index = 1;
             for (String course : student.getCourses()) {
                 System.out.println(index + "- " + course);
@@ -1443,7 +1451,7 @@ public class Main {
             if (listCourses())
             {
                 System.out.println(student.getCourses().size() + 1 + "- Main panel");
-                System.out.print("Enter your selection : ");
+                System.out.print("Enter your selection: ");
                 try {
                     int selection = input.nextInt();
                     if (selection >= 1 && selection <= student.getCourses().size()) {
@@ -1451,7 +1459,7 @@ public class Main {
                         String comment;
                         do {
                             input.nextLine();
-                            System.out.print("Enter your comment : ");
+                            System.out.print("Enter your comment: ");
                             comment = input.nextLine();
                             if (comment.isEmpty()) {
                                 System.out.println("Error: empty comment");
@@ -1468,10 +1476,12 @@ public class Main {
                         return;
                     } else {
                         System.out.println("Incorrect choice, please try again");
+                        Pause();
                     }
                 } catch (Exception e) {
                     System.out.println("Error: enter an actual number");
                     input.next();
+                    Pause();
                 }
             }
         }
@@ -1484,21 +1494,22 @@ public class Main {
         do {
             clearConsole();
             System.out.println("Update panel");
-            System.out.println("_____________________");
-            printList("Name : " + student.getName(), "Age : " + student.getAge(), "Phone number : " + student.getPhone(),
+            System.out.println("--------------------");
+            printList("Name: " + student.getName(), "Age: " + student.getAge(), "Phone number: " + student.getPhone(),
                     "Main panel");
-            System.out.print("Enter your selection : ");
+            System.out.print("Enter your selection: ");
             try {
                 int selection = input.nextInt();
                 switch (selection) {
                     case 1:
-                        System.out.print("Enter a new name : ");
+                        System.out.print("Enter a new name: ");
                         input.nextLine();
                         newInfo = input.nextLine();
                         if (!newInfo.isEmpty()) {
                             student.setName(newInfo);
                         } else {
                             System.out.println("Error: empty name");
+                            Pause();
                         }
                         break;
                     case 2:
@@ -1520,11 +1531,13 @@ public class Main {
                         break;
                     default:
                         System.out.println("Incorrect choice, please try again");
+                        Pause();
                         break;
                 }
             } catch (Exception e) {
                 System.out.println("Error: enter an actual number");
                 input.next();
+                Pause();
             }
         } while (err);
     }
@@ -1572,7 +1585,7 @@ public class Main {
         }
         catch (Exception e)
         {
-            System.out.println(input+ " is not a valid input.");
+            System.out.println("Error: Not a valid input.");
             Pause();
             return false;
         }

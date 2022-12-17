@@ -159,15 +159,6 @@ public class Student extends Person implements EventListener {
         }
 
     }
-    // remove grade
-    public void removeGrades(String courseID,String grade)
-    {
-        if(courses.contains(courseID)) {
-            grades.set(courses.indexOf(courseID), "");
-            update();
-        }
-
-    }
     //remove course
     public void removeCourse(String courseID)
     {

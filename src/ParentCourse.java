@@ -6,8 +6,6 @@ public class ParentCourse implements EventListener {
    private String name;
    private String code;
    private ArrayList<String> courses = new ArrayList<>();
-   private FileWriter writer;
-   private File file;
    private FileHandler fileHandler;
    ParentCourse(String code, String name,ArrayList<String> courses)
    {

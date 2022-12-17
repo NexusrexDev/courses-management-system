@@ -1,8 +1,8 @@
-Game Development Fundamentals
+Operating Systems for Dummies
 CODING
-steamdad
-4
-10000
+gates
+3
+1000
 20-12-2022
 30-12-2022
 10

@@ -31,7 +31,7 @@ public final class Global {
         String[] dirList = new File(path).list();
         for (String file : dirList) {
             //Removing the extension
-            list.add(file.replaceFirst("[.][^.]+$", ""));
+            list.add(file.replaceFirst(".txt", ""));
         }
         return list;
     }

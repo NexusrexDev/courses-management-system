@@ -1,19 +1,23 @@
 Report create on: 17-12-2022
-DRIVING - F1R : How to Race
-Instructor: hamilton
+MUSIC - MPC101 : Making Beats Like a Human
+Instructor: lastdonutofthenight
 Price: 10000
-Room: 3
-Start Date: 18-12-2022
-End Date: 19-12-2022
+Room: 6
+Start Date: 23-12-2022
+End Date: 27-12-2022
 Students: 
-CODING - GD101 : Game Development Fundamentals
-Instructor: steamdad
-Price: 10000
-Room: 4
+hzmsalah
+
+CODING - OS101 : Operating Systems for Dummies
+Instructor: gates
+Price: 1000
+Room: 3
 Start Date: 20-12-2022
 End Date: 30-12-2022
 Students: 
 nexusrex
 hzmsalah
 mazingerdev
+catlover
+
 
