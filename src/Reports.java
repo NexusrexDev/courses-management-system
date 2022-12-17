@@ -45,23 +45,10 @@ public class Reports {
 
         for (String course: courseDetails)
         {
-            report = report + course;
+            report = report + course + "\n";
         }
+
         fileHandler.create();
         fileHandler.update(report);
-
-        /*try {
-            fileHandler = new FileWriter(file);
-            fileWriter.write("Report created on: " +
-                    new SimpleDateFormat("dd-MM-yyyy").format(today) + "\n");
-            for (String course: courseDetails) {
-                fileHandler.write(course);
-            }
-            fileWriter.close();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }*/
-
-
     }
 }
