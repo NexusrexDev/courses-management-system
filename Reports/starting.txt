@@ -1,0 +1,23 @@
+Report create on: 17-12-2022
+MUSIC - MPC101 : Making Beats Like a Human
+Instructor: lastdonutofthenight
+Price: 10000
+Room: 6
+Start Date: 23-12-2022
+End Date: 27-12-2022
+Students: 
+hzmsalah
+
+CODING - OS101 : Operating Systems for Dummies
+Instructor: gates
+Price: 1000
+Room: 3
+Start Date: 20-12-2022
+End Date: 30-12-2022
+Students: 
+nexusrex
+hzmsalah
+mazingerdev
+catlover
+
+
