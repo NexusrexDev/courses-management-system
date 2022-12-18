@@ -414,8 +414,15 @@ public class Main {
             }
         } while (error);
         //Get phonenumber
-        System.out.print("Enter the instructor's phone number: ");
-        phoneNumber = input.next();
+        do {
+            System.out.print("Enter the instructor's phone number: ");
+            phoneNumber = input.next();
+            if (!isInteger(phoneNumber)) {
+                error = true;
+            } else {
+                error = false;
+            }
+        } while (error);
         //Get salary
         do {
             try {
@@ -991,7 +998,7 @@ public class Main {
             try {
                 System.out.print("Enter maximum grade: ");
                 grade = input.nextInt();
-                if (grade < 0) {
+                if (grade <= 0) {
                     System.out.println("Error: grade should be greater than 0");
                     error = true;
                 } else {
@@ -1000,6 +1007,7 @@ public class Main {
             } catch (Exception e) {
                 System.out.println("Error: enter an actual number");
                 input.next(); //Disregarding the entered letter
+                error = true;
             }
         } while (error);
 
@@ -1455,10 +1463,10 @@ public class Main {
                 try {
                     int selection = input.nextInt();
                     if (selection >= 1 && selection <= student.getCourses().size()) {
+                        input.nextLine();
                         boolean err = false;
                         String comment;
                         do {
-                            input.nextLine();
                             System.out.print("Enter your comment: ");
                             comment = input.nextLine();
                             if (comment.isEmpty()) {
